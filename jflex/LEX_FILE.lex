@@ -84,10 +84,10 @@ OP				= \+ | \- | \* | \/
 DOT				= \. | \;
 NO_STAR			= [0-9] | {LETTER} | {BRACKET} | {MARK} | {DOT} | {WhiteSpace} | \+ | \- | \/  /* For comments */
 NO_SLASH		= [0-9] | {LETTER} | {BRACKET} | {MARK} | {DOT} | {WhiteSpace} | \+ | \- | \*  /* For comments */
-T1_COMMENT 		= \/\/({LETTER}|[0-9]|{BRACKET}|{MARK}|{OP}|{DOT}|[\s\t])*{LineTerminator}
+T1_COMMENT 		= \/\/([a-zA-Z]|[0-9]|\(|\)|\[|\]|\{|\}|\?|\!|\+|\-|\*|\/|\.|\;|[ \t])*{LineTerminator}
 T2_COMMENT		= \/\* ( ({NO_STAR})* (\*{NO_SLASH})* )* (\*)? \*\/ /* NoS: (\*)? in case of single asterisk followed by no chars */
 SKIP  			= {WhiteSpace} | {T1_COMMENT} | {T2_COMMENT}
-T1_ERROR        = \/\/({LETTER}|[0-9]|{BRACKET}|{MARK}|{OP}|{DOT}|[\s\t])*
+T1_ERROR        = \/\/([a-zA-Z]|[0-9]|\(|\)|\[|\]|\{|\}|\?|\!|\+|\-|\*|\/|\.|\;|[ \t])*
 T2_ERROR        = \/\* ( ({NO_STAR})* (\*{NO_SLASH})* )* (\*)?
 COMMENT_ERROR   = {T1_ERROR} | {T2_ERROR}
 
@@ -125,7 +125,7 @@ COMMENT_ERROR   = {T1_ERROR} | {T2_ERROR}
     "string"			{ return symbol(TokenNames.TYPE_STRING); }         // TYPE_STRING: "string"
     "void"              { return symbol(TokenNames.TYPE_VOID); }           // TYPE_VOID: "void"
     ":="                { return symbol(TokenNames.ASSIGN); }              // ASSIGN: ":="
-    ="                  { return symbol(TokenNames.EQ); }                  // EQ: "="
+    "="                 { return symbol(TokenNames.EQ); }                  // EQ: "="
     "<"                 { return symbol(TokenNames.LT); }                  // LT: "<"
     ">"                 { return symbol(TokenNames.GT); }                  // GT: ">"
     "array"             { return symbol(TokenNames.ARRAY); }               // ARRAY: "array"
