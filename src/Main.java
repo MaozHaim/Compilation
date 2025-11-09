@@ -74,6 +74,7 @@ public class Main
 		String inputFileName = argv[0];
 		String outputFileName = argv[1];
 		boolean err = false;
+		boolean firstIter = true;
 
 		/********************************/
 		/* [1] Initialize a file reader */
@@ -116,11 +117,16 @@ public class Main
 			System.out.print(l.getLine());
 			System.out.print(",");
 			System.out.print(l.getTokenStartPosition());
-			System.out.println("]:");
+			System.out.println("]");
 			if (tokenType.equals("ERROR")){
 				err = true;
 				break;
 			}
+
+			if (firstIter)
+				firstIter = false;
+			else
+				fileWriter.print("\n");
 			fileWriter.print(tokenType);
 
 			boolean isNumber = tokenType.equals("INT");
@@ -140,7 +146,6 @@ public class Main
 			fileWriter.print(",");
 			fileWriter.print(l.getTokenStartPosition());
 			fileWriter.print("]");
-			fileWriter.print("\n");
 
 			/***********************/
 			/* [7] Read next token */
