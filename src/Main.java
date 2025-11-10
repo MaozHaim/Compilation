@@ -97,7 +97,7 @@ public class Main
 		try {
 			s = l.next_token();
 		}
-		catch (Error e) {
+		catch (Exception e) {
 			l.yyclose();
 			fileWriter.close();
 			overwriteOutputFile(outputFileName);
@@ -157,7 +157,7 @@ public class Main
 			try {
 				s = l.next_token();
 			}
-			catch (Error e) {
+			catch (Exception e) {
 				l.yyclose();
 				fileWriter.close();
 				overwriteOutputFile(outputFileName);
@@ -184,5 +184,3 @@ public class Main
 			System.out.println("Successful Lexical Analysis");
 	}
 }
-
-
