@@ -78,8 +78,10 @@ INTEGER			= 0 | [1-9][0-9]*
 LETTER          = [a-zA-Z]
 ID				= {LETTER}([a-zA-Z0-9]*)
 STRING          = \"{LETTER}*\"  /* "Strings that contain non-letter characters are lexical errors" */
-T1_COMMENT 		= \/\/([a-zA-Z]|[0-9]|\(|\)|\[|\]|\{|\}|\?|\!|\+|\-|\*|\/|\.|\;|[ \t])*{LineTerminator}
-T1_ERROR        = \/\/([a-zA-Z]|[0-9]|\(|\)|\[|\]|\{|\}|\?|\!|\+|\-|\*|\/|\.|\;|[ \t])*
+CommentAllowedWithNewline = [A-Za-z0-9 \t\r\n(){}\[\]?!+\-*/.;]
+CommentAllowedNoNewline   = [A-Za-z0-9 \t(){}\[\]?!+\-*/.;]
+T1_COMMENT 		= \/\/({CommentAllowedNoNewline})*{LineTerminator}
+T1_ERROR        = \/\/({CommentAllowedNoNewline} | [^A-Za-z0-9 \t\r\n(){}\[\]?!+\-*/.;])*{LineTerminator}
 T2_COMMENT		= "/*" ( [a-zA-Z0-9\s\t\r\n(){}\[\]?!+\-./;] | \*+[^*/] )* \*+ "/"
 T2_ERROR        = "/*" ( [a-zA-Z0-9\s\t\r\n(){}\[\]?!+\-./;] | \*+[^*/] )* (\*+)?
 COMMENT_ERROR   = {T1_ERROR} | {T2_ERROR}
@@ -132,10 +134,10 @@ SKIP  			= {WhiteSpace} | {T1_COMMENT} | {T2_COMMENT}
     "extends"           { return symbol(TokenNames.EXTENDS); }             // EXTENDS: "extends"
     "nil"               { return symbol(TokenNames.NIL); }                 // NIL: "nil"
     {LEADING_ZERO}      { return symbol(TokenNames.ERROR); }               // ERROR: Number with leading-zero
-    {INTEGER}			{ return symbol(TokenNames.INT, new Integer(yytext())); }   // INTEGER: Number with value (check range in Main)
-    {STRING}			{ return symbol(TokenNames.STRING, new String(yytext()));}  // String: String with value
-    {ID}				{ return symbol(TokenNames.ID, new String(yytext()));}      // ID: ID with value
-    {SKIP}		        { /* just skip what was found, do nothing */ }              // SKIP: Skip these tokens
+    {INTEGER}           { return symbol(TokenNames.INT, new Integer(yytext())); }   // INTEGER: Number with value (check range in Main)
+    {STRING}            { return symbol(TokenNames.STRING, new String(yytext()));}  // String: String with value
+    {ID}                { return symbol(TokenNames.ID, new String(yytext()));}      // ID: ID with value
+    {SKIP}              { /* just skip what was found, do nothing */}               // SKIP: Skip these tokens
     {COMMENT_ERROR}     { return symbol(TokenNames.ERROR); }                        // ERROR: Comment error
-    <<EOF>>				{ return symbol(TokenNames.EOF);}
+    <<EOF>>             { return symbol(TokenNames.EOF); }
 }
