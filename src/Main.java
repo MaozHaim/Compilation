@@ -118,11 +118,15 @@ public class Main
 			System.out.print(",");
 			System.out.print(l.getTokenStartPosition());
 			System.out.println("]");
+
 			if (tokenType.equals("ERROR")){
 				err = true;
 				break;
 			}
 
+			/************************/
+			/* [7] Write to file */
+			/************************/
 			if (firstIter)
 				firstIter = false;
 			else
@@ -148,7 +152,7 @@ public class Main
 			fileWriter.print("]");
 
 			/***********************/
-			/* [7] Read next token */
+			/* [8] Read next token */
 			/***********************/
 			try {
 				s = l.next_token();
@@ -162,17 +166,17 @@ public class Main
 		}
 
 		/******************************/
-		/* [8] Close lexer input file */
+		/* [9] Close lexer input file */
 		/******************************/
 		l.yyclose();
 
 		/**************************/
-		/* [9] Close output file */
+		/* [10] Close output file */
 		/**************************/
 		fileWriter.close();
 
 		/*************************************/
-		/* [9] Overwrite in case of an error */
+		/* [11] Overwrite in case of an error */
 		/*************************************/
 		if (err)
 			overwriteOutputFile(outputFileName);
