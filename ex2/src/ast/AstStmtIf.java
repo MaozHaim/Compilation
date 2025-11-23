@@ -10,7 +10,18 @@ public class AstStmtIf extends AstStmt
 	/*******************/
 	public AstStmtIf(AstExp cond, AstStmtList body)
 	{
+		super("IF LPAREN exp RPAREN LBRACE stmtlist RBRACE");
 		this.cond = cond;
 		this.body = body;
+	}
+
+	@Override
+	protected String GetNodeName() {
+		return "IF\n(EXP) {STMTLIST}";
+	}
+
+	@Override
+	protected List<? extends AstNode> GetChildren() {
+		return Arrays.asList(cond, body);
 	}
 }
