@@ -1,5 +1,8 @@
 package ast;
 
+import java.util.List;
+import java.util.Arrays;
+
 public class AstVarSubscript extends AstVar
 {
 	public AstVar var;

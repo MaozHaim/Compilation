@@ -9,7 +9,7 @@ public class AstStmtMethod extends AstStmt {
     public String fieldName;
     public List<AstExp> args;
 
-    public AstStmtMethod(AstVar var, String fieldName, NODE_LIST<AstExp> args) {
+    public AstStmtMethod(AstVar var, String fieldName, NodeList<AstExp> args) {
         super("stmt -> var DOT ID LPAREN (exp (COMMA exp)*)? RPAREN SEMICOLON");
         this.var = var;
         this.fieldName = fieldName;
@@ -30,7 +30,7 @@ public class AstStmtMethod extends AstStmt {
 
     @Override
     protected List<? extends AstNode> GetChildren() {
-        List<AST_Node> children = new ArrayList<>(args);
+        List<AstNode> children = new ArrayList<>(args);
         children.add(0, var);
         return children;
     }

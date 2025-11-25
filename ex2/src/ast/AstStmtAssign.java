@@ -1,5 +1,8 @@
 package ast;
 
+import java.util.List;
+import java.util.Arrays;
+
 public class AstStmtAssign extends AstStmt
 {
 	/***************/
@@ -55,5 +58,5 @@ public class AstStmtAssign extends AstStmt
 //		/****************************************/
 //		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
 //		AstGraphviz.getInstance().logEdge(serialNumber,exp.serialNumber);
-	}
+	//}
 }

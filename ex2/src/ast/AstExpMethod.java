@@ -17,7 +17,7 @@ public class AstExpMethod extends AstExp{
         exps = Arrays.asList();
     }
 
-    public AstExpMethod(AstVar var, String methodName, NODE_LIST expStar){
+    public AstExpMethod(AstVar var, String methodName, NodeList expStar){
         super("exp -> var DOT ID LPAREN exp* RPAREN");
         this.methodName = methodName;
         this.var = var;
@@ -26,7 +26,7 @@ public class AstExpMethod extends AstExp{
 
     @Override
     protected List<? extends AstNode> GetChildren() {
-        List<AST_Node> children = new ArrayList<>(exps);
+        List<AstNode> children = new ArrayList<>(exps);
         children.add(0, var);
         return children;
     }

@@ -7,14 +7,14 @@ public class AstClassDec extends AstDec{
     public String superclass;
     public List<AstCfield> fields;
 
-    public AstClassDec(String id, String superclass, NODE_LIST<AstCfield> fields){
+    public AstClassDec(String id, String superclass, NodeList<AstCfield> fields){
         super("CLASS ID EXTENDS ID LBRACE cField (cField)* RBRACE");
         this.id = id;
         this.superclass = superclass;
         this.fields = fields.unroll();
     }
 
-    public AstClassDec(String id, NODE_LIST<AstCfield> fields){
+    public AstClassDec(String id, NodeList<AstCfield> fields){
         super("CLASS ID EXTENDS ID LBRACE cField (cField)* RBRACE");
         this.id = id;
         this.fields = fields.unroll();

@@ -14,7 +14,7 @@ public class AstExpFunc extends AstExp {
         exps = Arrays.asList();
     }
 
-    public AstExpFunc(String id, NODE_LIST expStar){
+    public AstExpFunc(String id, NodeList expStar){
         super(String.format("exp -> ID( %s ) LBRACK exp* RBRACK", id));
         this.id = id;
         exps = expStar.unroll();

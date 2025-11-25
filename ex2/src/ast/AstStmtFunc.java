@@ -7,7 +7,7 @@ public class AstStmtFunc extends AstStmt {
     public String id;
     public List<AstExp> args;
 
-    public AstStmtFunc(String id, NODE_LIST<AstExp> args) {
+    public AstStmtFunc(String id, NodeList<AstExp> args) {
         super("stmt -> ID LPAREN (exp (COMMA exp)*)? RPAREN SEMICOLON");
         this.id = id;
         this.args = args.unroll();

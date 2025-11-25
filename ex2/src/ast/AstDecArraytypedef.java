@@ -3,11 +3,11 @@ package ast;
 import java.util.Arrays;
 import java.util.List;
 
-public class AstDecArrartypedef extends AstDec{
+public class AstDecArraytypedef extends AstDec{
     public String id;
     public AstType type;
 
-    public AstDecArrartypedef(String id, AstType type) {
+    public AstDecArraytypedef(String id, AstType type) {
         super("arrayTypeDef -> ARRAY ID EQ type LBRACK RBRACK SEMICOLON");
         this.id = id;
         this.type = type;

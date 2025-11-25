@@ -1,5 +1,6 @@
 import java.io.*;
 
+import ast.AstProgram;
 import java_cup.runtime.Symbol;
 import ast.*;
 
@@ -11,7 +12,7 @@ public class Main{
 		Lexer l;
 		Parser p;
 		Symbol s;
-		AstStmtList ast;
+		AstProgram ast;
 		FileReader fileReader;
 		PrintWriter fileWriter;
 		String inputFileName = argv[0];
@@ -46,7 +47,7 @@ public class Main{
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
 			/***********************************/
-			ast = (AstStmtList) p.parse().value;
+			ast = (AstProgram) p.parse().value;
 			writeStatusToFile("OK", outputFileName); // if it makes it to this line, parsing succeeded
 
 //			/*************************/
@@ -67,7 +68,7 @@ public class Main{
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		writeStatusToFile(-1, "SUCCESS", outputFileName);
+		writeStatusToFile(-1, "OK", outputFileName);
 	}
 
 
@@ -90,7 +91,7 @@ public class Main{
 					writer.write("ERROR(" + lineNumber + ")");
 				}
 			}
-			else if (status.equals("SUCCESS")) {
+			else if (status.equals("OK")) {
 				writer.write("OK");
 				System.out.println("\n SUCCESS!");
 			}

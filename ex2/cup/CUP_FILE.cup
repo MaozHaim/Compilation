@@ -22,8 +22,7 @@ parser code
 		System.out.print(error_location);
 		System.out.print(":");
 		System.out.print(lexer.getTokenStartPosition());
-		System.out.print("] ");		
-		System.exit(0);
+		System.out.print("] ");
 
 		Main.writeStatusToFile(error_location, "ERROR", Main.outputFileName);
 		System.out.println("Exiting due to SYNTAX error");
@@ -126,10 +125,19 @@ non terminal NodeList<AstExp> c_exp_star;
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
+precedence left ASSIGN;
+precedence left EQ;
+precedence left LT;
+precedence left GT;
 precedence left PLUS;
 precedence left MINUS;
 precedence left TIMES;
 precedence left DIVIDE;
+// precedence left RBRACK;
+precedence left LBRACK;
+// precedence left RPAREN;
+precedence left LPAREN;
+precedence left DOT;
 
 /************************/
 /* START WITH: stmtList */
@@ -243,7 +251,7 @@ stmt		::=		varDec:d {: RESULT = new AstStmtVardec(d); :}
 					| RETURN SEMICOLON {: RESULT = new AstStmtReturn(); :}
 					| RETURN exp:e SEMICOLON {: RESULT = new AstStmtReturn(e); :}
 					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtIf(cond,body); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:ifBody RBRACE ELSE LBRACE smtList:elseBody RBRACE{: RESULT = new AstStmtIfElse(cond,ifBody,elseBody); :}
+					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:ifBody RBRACE ELSE LBRACE stmtList:elseBody RBRACE{: RESULT = new AstStmtIfElse(cond,ifBody,elseBody); :}
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtWhile(cond,body); :}
 					| ID:id LPAREN RPAREN SEMICOLON {: RESULT = new AstStmtFunc(id); :}
 					| ID:id LPAREN exp:e c_exp_star:eStar RPAREN SEMICOLON

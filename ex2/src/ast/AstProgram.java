@@ -5,7 +5,7 @@ import java.util.List;
 public class AstProgram extends AstNode{
     public List<AstDec> declarations;
 
-    public AstProgram(NODE_LIST<AstDec> declarations){
+    public AstProgram(NodeList<AstDec> declarations){
         super("program -> dec+");
         this.declarations = declarations.unroll();
     }

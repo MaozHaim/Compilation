@@ -1,5 +1,8 @@
 package ast;
 
+import java.util.List;
+import java.util.Arrays;
+
 public class AstStmtIf extends AstStmt
 {
 	public AstExp cond;

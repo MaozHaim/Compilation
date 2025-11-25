@@ -1,9 +1,9 @@
 package ast;
 
-public class AstExpstring extends AstExp {
+public class AstExpString extends AstExp {
     public String value;
 
-    public AstExpstring(String value) {
+    public AstExpString(String value) {
         super(String.format("exp -> STRING( %s )", value));
         this.value = value;
     }
