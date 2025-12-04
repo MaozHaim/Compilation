@@ -14,12 +14,11 @@ public abstract class AstNode
 	/* In particular, it can help in creating  */
 	/* a graphviz dot format of the AST ...    */
 	/*******************************************/
-	protected int lineNum; // the start of the line number it was encountered in.
 	public int serialNumber;
+	protected int lineNum; // the start of the line number it was encountered in.
+
 
 	public AstNode(String derivation, int lineNum) {
-		this.lineNum = lineNum;
-
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
@@ -29,21 +28,30 @@ public abstract class AstNode
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
 		System.out.println("====================== " + derivation);
+
+		this.lineNum = lineNum;
 	}
 
+	// Abstract functions
+	public abstract Type SemantMe();
 	protected abstract String GetNodeName();
+
 
 	protected List<? extends AstNode> GetChildren() { return Arrays.asList(); }
 
-	public abstract Type SemantMe();
 
-	/** Attempts to enter the table entry {id, type} into the symbol_table, use throwException on failure.*/
+	//TODO: is it in use?
+	/** Attempts to enter a table-entry {id, type} into the symbol_table, use throwException on failure.*/
 	protected final void tryTableEnter(String id, Type type){
 		SymbolTable table = SymbolTable.getInstance();
-		if (table.isInCurrentScope(id)) throwException("Name " + id + " already defined in current scope");
+		if (table.isInCurrentScope(id)){
+			throwException("Name " + id + " already defined in current scope");
+		}
 		table.enter(id, type);
 	}
 
+
+	//TODO: is it in use?
 	/**
 	 * find() method from SymbolTable, which automatically throws an error if the object wasn't found.
 	 * return The Type-class of the object if found.
@@ -51,9 +59,12 @@ public abstract class AstNode
 	protected Type tryTableFind(String ID) {
 		SymbolTable symbolTable = SymbolTable.getInstance();
 		Type type = symbolTable.find(ID);
-		if (type == null) { throwException("Name " + ID + " not found"); }
+		if (type == null) {
+			throwException("Name " + ID + " not found");
+		}
 		return type;
 	}
+
 
 	/**
 	 * Throw SemanticException and set the global failure line in SymbolTable to the line of the current command.
@@ -73,12 +84,12 @@ public abstract class AstNode
 			AstGraphviz.getInstance().logEdge(serialNumber, child.serialNumber);
 		}
 	}
-
+	// TODO: combine those 'PrintMe' functions
 	/***********************************************/
 	/* The default message for an unknown AST node */
 	/***********************************************/
-//	public void printMe()
-//	{
-//		System.out.print("AST NODE UNKNOWN\n");
-//	}
+	//	public void printMe()
+	//	{
+	//		System.out.print("AST NODE UNKNOWN\n");
+	//	}
 }

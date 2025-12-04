@@ -7,6 +7,7 @@ package symboltable;
 /* GENERAL IMPORTS */
 /*******************/
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
 /*******************/
@@ -46,15 +47,14 @@ public class SymbolTable
 
 	private final int GLOBALSCOPE = 0;
 	private Type expectedReturnType;
-	private int scopeCounter = GLOBALSCOPE; // for each scope we enter, this increments. for each scope exited, this decrements.
+	private int scopeCounter = 0; // for each scope we enter, this increments. for each scope exited, this decrements.
 	public TypeClass currentClass; // for searching for inherited fields inside subclass methods
 
 
 	/****************************************************************************/
 	/* Enter a variable, function, class type or array type to the symbol table */
 	/****************************************************************************/
-	public void enter(String name, Type t)
-	{
+	public void enter(String name, Type t) {
 		/*************************************************/
 		/* [1] Compute the hash value for this new entry */
 		/*************************************************/
@@ -72,7 +72,6 @@ public class SymbolTable
 		/**************************************************************************/
 		SymbolTableEntry newEntry = new SymbolTableEntry(name, t, hashValue, next, top, topIndex++, scopeCounter); // [3] Prepare a new symbol table entry with name, type, next and prevtop
 
-
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
 		/**********************************************/
@@ -89,24 +88,10 @@ public class SymbolTable
 		printMe();
 	}
 
-	/***********************************************/
-	/* Find the inner-most scope element with name */
-	/***********************************************/
-//	public Type find(String name)
-//	{
-//		SymbolTableEntry e;
-//
-//		for (e = table[hash(name)]; e != null; e = e.next)
-//		{
-//			if (name.equals(e.name))
-//			{
-//				return e.type;
-//			}
-//		}
-//
-//		return null;
-//	}
 
+	/***********************************************/
+	/* Find the innermost scope element with name */
+	/***********************************************/
 	public Type find(String name) {
 		SymbolTableEntry found = findEntryInTable(name);
 
@@ -127,9 +112,13 @@ public class SymbolTable
 		return null;
 	}
 
-	/* scan table to find the first occurrence on name */
-	private SymbolTableEntry findEntryInTable(String name){
+
+	/**
+	 *  scan table to find the first occurrence on name
+	 **/
+	private SymbolTableEntry findEntryInTable(String name) {
 		SymbolTableEntry current_entry = table[hash(name)];
+
 		while (current_entry != null) {
 			if (name.equals(current_entry.name)) {
 				break;
@@ -139,6 +128,70 @@ public class SymbolTable
 
 		return current_entry;
 	}
+
+
+	/**
+	 *  check if a variable is in the current scope
+	 **/
+	public boolean isInCurrentScope(String name){
+		SymbolTableEntry entry = findEntryInTable(name);
+		if (entry == null){
+			return false;
+		}
+		return entry.scope == scopeCounter;
+	}
+
+
+	/**
+	 * @return true iff table is currently in global scope
+	 */
+	public boolean inGlobalScope(){
+		return scopeCounter == GLOBALSCOPE;
+	}
+
+
+	/***************************************************************************/
+	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
+	/***************************************************************************/
+	public void beginScope()
+	{
+		/************************************************************************/
+		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
+		/* they are not really types. In order to be able to debug print them,  */
+		/* a special TYPE_FOR_SCOPE_BOUNDARIES was developed for them. This     */
+		/* class only contain their type name which is the bottom sign: _|_     */
+		/************************************************************************/
+		enter("SCOPE-BOUNDARY", new TypeForScopeBoundaries("NONE"));
+		scopeCounter++;
+		printMe(); // Print the symbol table after every change
+	}
+
+
+	/********************************************************************************/
+	/* end scope = Keep popping elements out of the data structure,                 */
+	/* from most recent element entered, until a <NEW-SCOPE> element is encountered */
+	/********************************************************************************/
+	public void endScope()
+	{
+		/**************************************************************************/
+		/* Pop elements from the symbol table stack until a SCOPE-BOUNDARY is hit */
+		/**************************************************************************/
+		while (top.name != "SCOPE-BOUNDARY")
+		{
+			table[top.index] = top.next;
+			topIndex = topIndex -1;
+			top = top.prevtop;
+		}
+		/**************************************/
+		/* Pop the SCOPE-BOUNDARY sign itself */
+		/**************************************/
+		table[top.index] = top.next;
+		topIndex = topIndex -1;
+		top = top.prevtop;
+
+		printMe(); // Print the symbol table after every change
+	}
+
 
 	/**
 	 * Returns the type of attribute, or null on failure.
@@ -157,6 +210,7 @@ public class SymbolTable
 		return null;
 	}
 
+
 	/**
 	 * Finds a member of a class
 	 */
@@ -170,65 +224,18 @@ public class SymbolTable
 		return null;
 	}
 
-	public boolean isInCurrentScope(String name){
-		SymbolTableEntry entry = findEntryInTable(name);
-		if (entry == null) return false;
-		return entry.scope == scopeCounter;
+
+	public void setExpectedReturnType(Type type){
+		expectedReturnType = type;
 	}
 
-	/***************************************************************************/
-	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
-	/***************************************************************************/
-	public void beginScope()
-	{
-		/************************************************************************/
-		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
-		/* they are not really types. In order to be able to debug print them,  */
-		/* a special TYPE_FOR_SCOPE_BOUNDARIES was developed for them. This     */
-		/* class only contain their type name which is the bottom sign: _|_     */
-		/************************************************************************/
-		enter(
-			"SCOPE-BOUNDARY",
-			new TypeForScopeBoundaries("NONE"));
 
-		scopeCounter++;
-
-		/*********************************************/
-		/* Print the symbol table after every change */
-		/*********************************************/
-		printMe();
+	public Type getExpectedReturnType(){
+		return expectedReturnType;
 	}
 
-	/********************************************************************************/
-	/* end scope = Keep popping elements out of the data structure,                 */
-	/* from most recent element entered, until a <NEW-SCOPE> element is encountered */
-	/********************************************************************************/
-	public void endScope()
-	{
-		/**************************************************************************/
-		/* Pop elements from the symbol table stack until a SCOPE-BOUNDARY is hit */		
-		/**************************************************************************/
-		while (top.name != "SCOPE-BOUNDARY")
-		{
-			table[top.index] = top.next;
-			topIndex = topIndex -1;
-			top = top.prevtop;
-		}
-		/**************************************/
-		/* Pop the SCOPE-BOUNDARY sign itself */		
-		/**************************************/
-		table[top.index] = top.next;
-		topIndex = topIndex -1;
-		top = top.prevtop;
 
-		/*********************************************/
-		/* Print the symbol table after every change */		
-		/*********************************************/
-		printMe();
-	}
-	
 	public static int n=0;
-	
 	public void printMe()
 	{
 		int i=0;
@@ -304,22 +311,24 @@ public class SymbolTable
 			e.printStackTrace();
 		}		
 	}
-	
+
+
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
 	/**************************************/
 	private static SymbolTable instance = null;
+
 
 	/*****************************/
 	/* PREVENT INSTANTIATION ... */
 	/*****************************/
 	protected SymbolTable() {}
 
+
 	/******************************/
 	/* GET SINGLETON INSTANCE ... */
 	/******************************/
-	public static SymbolTable getInstance()
-	{
+	public static SymbolTable getInstance() {
 		if (instance == null)
 		{
 			/*******************************/
@@ -332,6 +341,8 @@ public class SymbolTable
 			/*****************************************/
 			instance.enter("int",   TypeInt.getInstance());
 			instance.enter("string", TypeString.getInstance());
+			instance.enter("void", TypeVoid.getInstance()); /* [2] How should we handle void ??? */
+			instance.enter("nil", TypeVoid.getInstance());
 
 			/*************************************/
 			/* [2] How should we handle void ??? */
@@ -341,15 +352,36 @@ public class SymbolTable
 			/* [3] Enter library function PrintInt */
 			/***************************************/
 			instance.enter(
-				"PrintInt",
-				new TypeFunction(
-					TypeVoid.getInstance(),
 					"PrintInt",
-					new TypeList(
-						TypeInt.getInstance(),
-						null)));
-			
+					new TypeFunction(
+							TypeVoid.getInstance(),
+							"PrintInt",
+							Arrays.asList(TypeInt.getInstance())));
+			instance.enter(
+					"PrintString",
+					new TypeFunction(
+							TypeVoid.getInstance(),
+							"PrintString",
+							Arrays.asList(TypeString.getInstance())));
 		}
 		return instance;
+	}
+
+
+	/***************************************/
+	/* Debugging purposes                  */
+	/***************************************/
+	public void printSymbolTable() {
+		System.out.println("!Printing symbol table!");
+		for (SymbolTableEntry entry: table) {
+			SymbolTableEntry current = entry;
+			while (current != null){
+				System.out.println("Index: " + current.index);
+				System.out.println("Name: " + current.name);
+				System.out.println("Type: " + current.type.name);
+				System.out.println();
+				current = current.next;
+			}
+		}
 	}
 }

@@ -28,6 +28,11 @@ public class SymbolTableEntry
 	/******************/
 	public Type type;
 
+	/******************/
+	/* Scope number   */
+	/******************/
+	public int scope;
+
 	/*********************************************/
 	/* prevtop and next symbol table entries ... */
 	/*********************************************/
@@ -38,8 +43,6 @@ public class SymbolTableEntry
 	/* The prevtopIndex is just for debug purposes ... */
 	/****************************************************/
 	public int prevtopIndex;
-
-	public int scope;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
