@@ -1,5 +1,10 @@
 package ast;
 
+import types.Type;
+import types.TypeArray;
+import types.TypeClass;
+import types.TypeNil;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,12 +16,9 @@ public class AstStmtAssign extends AstStmt
 	public AstVar var;
 	public AstExp exp;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AstStmtAssign(AstVar var, AstExp exp)
+	public AstStmtAssign(AstVar var, AstExp exp, int lineNum)
 	{
-		super("stmt -> var ASSIGN exp SEMICOLON");
+		super("stmt -> var ASSIGN exp SEMICOLON", lineNum); // var := exp;
 		this.var = var;
 		this.exp = exp;
 	}
@@ -30,33 +32,54 @@ public class AstStmtAssign extends AstStmt
 	protected List<? extends AstNode> GetChildren() {
 		return Arrays.asList(var, exp);
 	}
-	/*********************************************************/
-	/* The printing message for an assign statement AST node */
-	/*********************************************************/
-//	public void printMe()
-//	{
-//		/********************************************/
-//		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
-//		/********************************************/
-//		System.out.print("AST NODE ASSIGN STMT\n");
-//
-//		/***********************************/
-//		/* RECURSIVELY PRINT VAR + EXP ... */
-//		/***********************************/
-//		if (var != null) var.printMe();
-//		if (exp != null) exp.printMe();
-//
-//		/***************************************/
-//		/* PRINT Node to AST GRAPHVIZ DOT file */
-//		/***************************************/
-//		AstGraphviz.getInstance().logNode(
-//				serialNumber,
-//			"ASSIGN\nleft := right\n");
-//
-//		/****************************************/
-//		/* PRINT Edges to AST GRAPHVIZ DOT file */
-//		/****************************************/
-//		AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
-//		AstGraphviz.getInstance().logEdge(serialNumber,exp.serialNumber);
-	//}
+
+	public Type SemantMe() {
+		Type leftTypeData = var.SemantMe();
+		Type rightTypeData = exp.SemantMe();
+
+		if (leftTypeData.equals(rightTypeData)) return null;
+
+		if (leftTypeData.isArray()) {
+			arraySemantCheck((TypeArray)leftTypeData, rightTypeData, exp.isNewExp());
+			return null;
+		}
+
+		if (leftTypeData instanceof TypeClass) {
+			classSemantCheck((TypeClass)leftTypeData, rightTypeData);
+			return null;
+		}
+
+		throwException("Type mismatch");
+		return null; // cant reach this point
+	}
+
+	private void arraySemantCheck(TypeArray leftArr, Type rightType, boolean isNewExp){
+		if (!(rightType.isArray())) {
+			if(!(rightType instanceof TypeNil)) // nil is valid to array
+				throwException("expression must be of array type");
+			else return;
+		}
+
+		TypeArray rightArr = (TypeArray)rightType;
+		// the reason for || !isNewExp is that otherwise the array types must be strictly the same, and that was already tested for
+		if (!leftArr.typeOfElements.equals(rightArr.typeOfElements) || !isNewExp)
+			throwException("Assignment of differing array types");
+
+	}
+
+	private void classSemantCheck(TypeClass leftClass, Type rightType){
+		if (!(rightType instanceof TypeClass)) {
+			if(!(rightType instanceof TypeNil)) {// nil is valid to class
+				throwException("expression must be of class type");
+			}
+			else return;
+		}
+
+		TypeClass rightClass = (TypeClass) rightType;
+
+		if (!rightClass.isSubtypeOf(leftClass)) {
+			throwException("Expression does not inherit from variable's class");
+		}
+	}
+	
 }

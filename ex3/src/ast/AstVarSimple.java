@@ -1,5 +1,7 @@
 package ast;
 
+import types.Type;
+
 public class AstVarSimple extends AstVar
 {
 	/************************/
@@ -10,9 +12,9 @@ public class AstVarSimple extends AstVar
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstVarSimple(String name)
+	public AstVarSimple(String name, int lineNum)
 	{
-		super("var -> ID( %s )");
+		super("var -> ID( %s )", lineNum);
 		this.name = name;
 	}
 
@@ -21,21 +23,8 @@ public class AstVarSimple extends AstVar
 		return String.format("SIMPLE\nVAR(%s)",name);
 	}
 
-	/**************************************************/
-	/* The printing message for a simple var AST node */
-	/**************************************************/
-//	public void printMe()
-//	{
-//		/**********************************/
-//		/* AST NODE TYPE = AST SIMPLE VAR */
-//		/**********************************/
-//		System.out.format("AST NODE SIMPLE VAR( %s )\n",name);
-//
-//		/*********************************/
-//		/* Print to AST GRAPHVIZ DOT file */
-//		/*********************************/
-//		AstGraphviz.getInstance().logNode(
-//				serialNumber,
-//			String.format("SIMPLE\nVAR\n(%s)",name));
-//	}
+	public Type SemantMe() {
+		return tryTableFind(this.name);
+	}
+
 }

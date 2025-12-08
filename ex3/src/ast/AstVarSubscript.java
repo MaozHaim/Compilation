@@ -1,5 +1,9 @@
 package ast;
 
+import types.Type;
+import types.TypeArray;
+import types.TypeInt;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,9 +15,9 @@ public class AstVarSubscript extends AstVar
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstVarSubscript(AstVar var, AstExp subscript)
+	public AstVarSubscript(AstVar var, AstExp subscript, int lineNum)
 	{
-		super("var -> var [ exp ]");
+		super("var -> var [ exp ]", lineNum); // x[index]
 		this.var = var;
 		this.subscript = subscript;
 	}
@@ -28,33 +32,20 @@ public class AstVarSubscript extends AstVar
 		return "SUBSCRIPT\nVAR\n...[...]";
 	}
 
-	/*****************************************************/
-	/* The printing message for a subscript var AST node */
-	/*****************************************************/
-//	public void printMe()
-//	{
-//		/*************************************/
-//		/* AST NODE TYPE = AST SUBSCRIPT VAR */
-//		/*************************************/
-//		System.out.print("AST NODE SUBSCRIPT VAR\n");
-//
-//		/****************************************/
-//		/* RECURSIVELY PRINT VAR + SUBSCRIPT ... */
-//		/****************************************/
-//		if (var != null) var.printMe();
-//		if (subscript != null) subscript.printMe();
-//
-//		/***************************************/
-//		/* PRINT Node to AST GRAPHVIZ DOT file */
-//		/***************************************/
-//		AstGraphviz.getInstance().logNode(
-//				serialNumber,
-//			"SUBSCRIPT\nVAR\n...[...]");
-//
-//		/****************************************/
-//		/* PRINT Edges to AST GRAPHVIZ DOT file */
-//		/****************************************/
-//		if (var       != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
-//		if (subscript != null) AstGraphviz.getInstance().logEdge(serialNumber,subscript.serialNumber);
-//	}
+	public Type SemantMe() { // TODO: Has to be an array, right?
+		Type subscriptType = subscript.SemantMe();
+
+		if (!(subscriptType instanceof TypeInt)) { // Note: doesn't seem like you need to validate indices.
+			throwException("Index must be an integer.");
+		}
+
+		Type varType = var.SemantMe();
+
+		if (!(varType.isArray())) {
+			throwException("Accessing an index is only valid with arrays.");
+		}
+
+		TypeArray arrType = (TypeArray)varType;
+		return arrType.typeOfElements;
+	}
 }

@@ -40,7 +40,6 @@ public abstract class AstNode
 	protected List<? extends AstNode> GetChildren() { return Arrays.asList(); }
 
 
-	//TODO: is it in use?
 	/** Attempts to enter a table-entry {id, type} into the symbol_table, use throwException on failure.*/
 	protected final void tryTableEnter(String id, Type type){
 		SymbolTable table = SymbolTable.getInstance();
@@ -51,7 +50,6 @@ public abstract class AstNode
 	}
 
 
-	//TODO: is it in use?
 	/**
 	 * find() method from SymbolTable, which automatically throws an error if the object wasn't found.
 	 * return The Type-class of the object if found.

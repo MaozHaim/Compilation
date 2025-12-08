@@ -1,5 +1,9 @@
 package ast;
 
+import types.Type;
+import types.TypeArray;
+import symbolTable.SymbolTable;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,9 +15,9 @@ public class AstVarField extends AstVar
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstVarField(AstVar var, String fieldName)
+	public AstVarField(AstVar var, String fieldName, int lineNum)
 	{
-		super("var -> var DOT ID( %s )");
+		super("var -> var DOT ID( %s )", lineNum); // x.attribute
 		this.var = var;
 		this.fieldName = fieldName;
 	}
@@ -28,32 +32,22 @@ public class AstVarField extends AstVar
 		return Arrays.asList(var);
 	}
 
-	/*************************************************/
-	/* The printing message for a field var AST node */
-	/*************************************************/
-//	public void printMe()
-//	{
-//		/*********************************/
-//		/* AST NODE TYPE = AST FIELD VAR */
-//		/*********************************/
-//		System.out.print("AST NODE FIELD VAR\n");
-//
-//		/**********************************************/
-//		/* RECURSIVELY PRINT VAR, then FIELD NAME ... */
-//		/**********************************************/
-//		if (var != null) var.printMe();
-//		System.out.format("FIELD NAME( %s )\n",fieldName);
-//
-//		/***************************************/
-//		/* PRINT Node to AST GRAPHVIZ DOT file */
-//		/***************************************/
-//		AstGraphviz.getInstance().logNode(
-//				serialNumber,
-//			String.format("FIELD\nVAR\n...->%s",fieldName));
-//
-//		/****************************************/
-//		/* PRINT Edges to AST GRAPHVIZ DOT file */
-//		/****************************************/
-//		if (var != null) AstGraphviz.getInstance().logEdge(serialNumber,var.serialNumber);
-//	}
+	public Type SemantMe() {
+		SymbolTable table = SymbolTable.getInstance();
+		Type type = var.SemantMe();
+
+		if (!(type instanceof TypeClass)) {
+			throwException("Object is not of type class, has no fields");
+		}
+
+		TypeClass classType = (TypeClass) type;
+		Type fieldType = table.findMemberType(classType, fieldName);
+
+		if (fieldType == null) { 
+			throwException("undefined field " + fieldName); 
+		}
+		
+		return fieldType;
+	}
+
 }

@@ -1,13 +1,15 @@
 package ast;
 
+import types.Type;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class AstStmtVardec extends AstStmt {
     public AstVardec dec;
 
-    public AstStmtVardec(AstVardec dec) {
-        super("stmt -> vardec");
+    public AstStmtVardec(AstVardec dec, int lineNum) {
+        super("stmt -> vardec", lineNum);
         this.dec = dec;
     }
 
@@ -20,4 +22,9 @@ public class AstStmtVardec extends AstStmt {
     protected String GetNodeName() {
         return "STMT\nVARDEC";
     }
+
+    @Override public Type SemantMe() {
+        return dec.SemantMe();
+    }
+
 }

@@ -1,5 +1,7 @@
 package ast;
 
+import types.type;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,9 +16,9 @@ public class AstStmtList extends AstNode
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AstStmtList(AstStmt head, AstStmtList tail)
+	public AstStmtList(AstStmt head, AstStmtList tail, int lineNum)
 	{
-		super("stmtlist -> " + (tail != null ? "stmt stmtlist" : "stmt"));
+		super("stmtlist -> " + (tail != null ? "stmt stmtlist" : "stmt"), lineNum);
 		this.head = head;
 		this.tail = tail;
 	}
@@ -34,34 +36,12 @@ public class AstStmtList extends AstNode
 		return Arrays.asList(head, tail);
 	}
 
-	/******************************************************/
-	/* The printing message for a statement list AST node */
-	/******************************************************/
-//	public void printMe()
-//	{
-//		/**************************************/
-//		/* AST NODE TYPE = AST STATEMENT LIST */
-//		/**************************************/
-//		System.out.print("AST NODE STMT LIST\n");
-//
-//		/*************************************/
-//		/* RECURSIVELY PRINT HEAD + TAIL ... */
-//		/*************************************/
-//		if (head != null) head.printMe();
-//		if (tail != null) tail.printMe();
-//
-//		/**********************************/
-//		/* PRINT to AST GRAPHVIZ DOT file */
-//		/**********************************/
-//		AstGraphviz.getInstance().logNode(
-//				serialNumber,
-//			"STMT\nLIST\n");
-//
-//		/****************************************/
-//		/* PRINT Edges to AST GRAPHVIZ DOT file */
-//		/****************************************/
-//		if (head != null) AstGraphviz.getInstance().logEdge(serialNumber,head.serialNumber);
-//		if (tail != null) AstGraphviz.getInstance().logEdge(serialNumber,tail.serialNumber);
-//	}
-	
+	public Type SemantMe() {
+		AstStmtList current = this;
+		while (current != null) {
+			current.head.SemantMe();
+			current = current.tail;
+		}
+		return null; // A sequence of statements doesn't have a type.
+	}	
 }
