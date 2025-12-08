@@ -2,7 +2,7 @@ package ast;
 
 public abstract class AstExp extends AstNode
 {
-    public AstExp(String derivation) {
-		super(derivation);
+    public AstExp(String derivation, int lineNum) {
+		super(derivation, lineNum);
 	}
 }
