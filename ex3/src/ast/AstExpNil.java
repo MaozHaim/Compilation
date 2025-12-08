@@ -1,12 +1,24 @@
 package ast;
 
+import types.*;
+
 public class AstExpNil extends AstExp {
-    public AstExpNil() {
-        super("exp -> NIL");
+    public AstExpNil(int lineNum) {
+        super("exp -> NIL", lineNum);
     }
 
     @Override
     protected String GetNodeName() {
         return "NIL";
+    }
+
+    @Override
+    public Type SemantMe() {
+        return TypeNil.getInstance();
+    }
+
+    @Override
+    public boolean isConstant() {
+        return true;
     }
 }

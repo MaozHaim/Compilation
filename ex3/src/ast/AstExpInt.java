@@ -1,38 +1,32 @@
 package ast;
 
+import types.Type;
+import types.TypeInt;
+
 public class AstExpInt extends AstExp
 {
 	public int value;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstExpInt(int value)
+
+	public AstExpInt(int value, int lineNum)
 	{
-		super("exp -> INT( %d )");
+		super("exp -> INT( %d )", lineNum);
 		this.value = value;
 	}
+
 
 	@Override
 	protected String GetNodeName() {
 		return String.format("INT(%d)",value);
 	}
 
-	// /************************************************/
-	// /* The printing message for an int exp AST node */
-	// /************************************************/
-	// public void printMe()
-	// {
-	// 	/*******************************/
-	// 	/* AST NODE TYPE = AST INT EXP */
-	// 	/*******************************/
-	// 	System.out.format("AST NODE INT( %d )\n",value);
 
-	// 	/*********************************/
-	// 	/* Print to AST GRAPHVIZ DOT file */
-	// 	/*********************************/
-	// 	AstGraphviz.getInstance().logNode(
-	// 			serialNumber,
-	// 		String.format("INT(%d)",value));
-	// }
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+
+	public Type SemantMe() {
+		return TypeInt.getInstance();
+	}
 }
