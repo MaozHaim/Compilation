@@ -1,5 +1,6 @@
 package types;
 
+// TODO can we delete this?
 public class TypeList
 {
 	/****************/

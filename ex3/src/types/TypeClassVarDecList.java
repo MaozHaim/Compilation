@@ -2,10 +2,10 @@ package types;
 
 public class TypeClassVarDecList
 {
-	public TypeClassVarDec head;
+	public TypeClassMemberDec head;
 	public TypeClassVarDecList tail;
 	
-	public TypeClassVarDecList(TypeClassVarDec head, TypeClassVarDecList tail)
+	public TypeClassVarDecList(TypeClassMemberDec head, TypeClassVarDecList tail)
 	{
 		this.head = head;
 		this.tail = tail;

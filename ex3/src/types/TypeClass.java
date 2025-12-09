@@ -32,4 +32,10 @@ public class TypeClass extends Type
 		}
 		return false;
 	}
+
+	@Override
+	public boolean equals(Object obj){
+		if (!(obj instanceof TypeClass other)) return false;
+		return this.name.equals(other.name);
+	}
 }

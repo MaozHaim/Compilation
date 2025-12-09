@@ -1,6 +1,6 @@
 package errors;
 
-public class CompilationException extends RuntimeException { // TODO: Holy sh*t this looks confusing.
+public class CompilationException extends RuntimeException {
 
     private final int lineNumber;
 

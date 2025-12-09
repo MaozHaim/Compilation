@@ -1,10 +1,14 @@
 import java.io.*;
 import java.io.PrintWriter;
+
+import errors.SemanticException;
 import java_cup.runtime.Symbol;
 import ast.*;
 
 public class Main
 {
+	public static String outputFileName = null;
+
 	static public void main(String argv[])
 	{
 		Lexer l;
@@ -14,7 +18,7 @@ public class Main
 		FileReader fileReader;
 		PrintWriter fileWriter;
 		String inputFileName = argv[0];
-		String outputFileName = argv[1];
+		outputFileName = argv[1];
 		
 		try
 		{
@@ -51,7 +55,20 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			ast.semantMe();
+			try {
+				System.out.println("=========================\n===Initiating Semantme===\n=========================");
+				ast.SemantMe();
+			}
+			catch (Exception e) {
+				if (e instanceof SemanticException) {
+					// TODO When there is a syntax or semantic error: ERROR(location) and handling of all cases
+					SemanticException se = (SemanticException) e;
+					writeStatusToFile(se.getLineNumber(), "ERROR", outputFileName);
+				}
+				else { writeStatusToFile(-1, "ERROR", outputFileName); }
+				e.printStackTrace();
+				System.exit(0);
+			}
 			
 			/*************************/
 			/* [8] Close output file */
@@ -66,6 +83,36 @@ public class Main
 			     
 		catch (Exception e)
 		{
+			e.printStackTrace();
+		}
+		writeStatusToFile(-1, "SUCCESS", outputFileName);
+	}
+
+	public static void writeStatusToFile(int lineNumber, String status, String PATH) {
+		try {
+			FileWriter fw = new FileWriter(PATH);
+			BufferedWriter writer = new BufferedWriter(fw);
+
+			if (status.equals("ERROR")) {
+				if (lineNumber >= 0) {
+					writer.write("ERROR(" + lineNumber + ")");
+				} else {
+					writer.write("ERROR");
+				}
+			}
+			else if (status.equals("SUCCESS")) {
+				writer.write("OK");
+				System.out.println("\n SUCCESS!");
+			}
+			else {
+				writer.close();
+				throw new IOException("Incorrect status code when writing to file.");
+			}
+
+			writer.close();
+		}
+		catch (IOException e) {
+			System.out.println("ERROR WHEN OPENING FILE.");
 			e.printStackTrace();
 		}
 	}
