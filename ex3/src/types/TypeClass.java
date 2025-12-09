@@ -35,7 +35,8 @@ public class TypeClass extends Type
 
 	@Override
 	public boolean equals(Object obj){
-		if (!(obj instanceof TypeClass other)) return false;
+		if (!(obj instanceof TypeClass)) return false;
+		TypeClass other = (TypeClass) obj;
 		return this.name.equals(other.name);
 	}
 }

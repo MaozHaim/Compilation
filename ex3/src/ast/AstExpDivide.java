@@ -50,9 +50,13 @@ public class AstExpDivide extends AstExp
 		if (!areIntegers) {
 			throwException("DIVIDE - Operation defined only for integers.");
 		}
-		if (right instanceof AstExpInt rightInt && rightInt.value == 0) {
-			throwException("DIVIDE - Explicit division by zero.");
+		if (right instanceof AstExpInt) {
+			AstExpInt rightInt = (AstExpInt) right;
+			if (rightInt.value == 0) {
+				throwException("DIVIDE - Explicit division by zero.");
+			}
 		}
+
 		return typeLeft;
 	}
 }

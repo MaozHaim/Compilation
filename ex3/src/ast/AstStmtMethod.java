@@ -9,28 +9,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static utils.Utils.matchTypesArgsParams;
+
 public class AstStmtMethod extends AstStmt {
     public AstVar var;
-    public String fieldName;
+    public String methodName;
     public List<AstExp> args;
 
-    public AstStmtMethod(AstVar var, String fieldName, NodeList<AstExp> args, , int lineNum) {
+    public AstStmtMethod(AstVar var, String methodName, NodeList<AstExp> args, int lineNum) {
         super("stmt -> var DOT ID LPAREN (exp (COMMA exp)*)? RPAREN SEMICOLON", lineNum); // x.method(exp, exp...);
         this.var = var;
-        this.fieldName = fieldName;
+        this.methodName = methodName;
         this.args = args.unroll();
     }
 
-    public AstStmtMethod(AstVar var, String fieldName, int lineNum){
+    public AstStmtMethod(AstVar var, String methodName, int lineNum){
         super("stmt -> ID LPAREN RPAREN SEMICOLON", lineNum); // x.method();
         this.var = var;
-        this.fieldName = fieldName;
+        this.methodName = methodName;
         this.args = Arrays.asList();
     }
 
     @Override
     protected String GetNodeName() {
-        return String.format("STMT\nVAR...->%s(%s)", fieldName, (args != null ? "PARAMS" : ""));
+        return String.format("STMT\nVAR...->%s(%s)", methodName, (args != null ? "PARAMS" : ""));
     }
 
     @Override

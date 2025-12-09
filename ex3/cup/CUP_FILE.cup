@@ -146,7 +146,7 @@ start with program;
 /* DERIVATION RULES */
 /********************/
 // equivalent to (dec)+
-program    ::=      dec_plus:dPlus	{: RESULT = new AstProgram(dPlus); :}
+program    ::=      dec_plus:dPlus	{: RESULT = new AstProgram(dPlus, dPlusleft); :}
                     ;
 
 dec_plus	::=		dec:d {: RESULT = new NodeList<AstDec>(d, null); :}
@@ -159,78 +159,79 @@ dec			::=		varDec:v {: RESULT = v; :}
 					| arrayTypedef:a {: RESULT = a; :}
 					;
 
-type		::=		TYPE_INT {: RESULT = new AstType(Primitive.INT.label); :}
-					| TYPE_STRING {: RESULT = new AstType(Primitive.STRING.label); :}
-					| TYPE_VOID {: RESULT = new AstType(Primitive.VOID.label); :}
-					| ID:name {: RESULT = new AstType(name); :}
+type		::=		TYPE_INT:t {: RESULT = new AstType(Primitive.INT.label, tleft); :}
+					| TYPE_STRING:t {: RESULT = new AstType(Primitive.STRING.label, tleft); :}
+					| TYPE_VOID:t {: RESULT = new AstType(Primitive.VOID.label, tleft); :}
+					| ID:name {: RESULT = new AstType(name, nameleft); :}
 					;
 
-varDec		::=		type:t ID:name SEMICOLON {: RESULT = new AstVardec(t, name); :}
-					| type:t ID:name ASSIGN exp:e SEMICOLON {: RESULT = new AstVardec(t, name, e); :}
-					| type:t ID:name ASSIGN newExp:newE SEMICOLON {: RESULT = new AstVardec(t, name, newE); :}
+varDec		::=		type:t ID:name SEMICOLON {: RESULT = new AstVardec(t, name, tleft); :}
+					| type:t ID:name ASSIGN exp:e SEMICOLON {: RESULT = new AstVardec(t, name, e, tleft); :}
+					| type:t ID:name ASSIGN newExp:newE SEMICOLON {: RESULT = new AstVardec(t, name, newE, tleft); :}
 					;
 
-newExp		::=		NEW type:t {: RESULT = new AstNewexp(t); :}
-					| NEW type:t LBRACK exp:e RBRACK {: RESULT = new AstNewexp(t, e); :}
+newExp		::=		NEW:n type:t {: RESULT = new AstNewexp(t, nleft); :}
+					| NEW:n type:t LBRACK exp:e RBRACK {: RESULT = new AstNewexp(t, e, nleft); :}
 					;
 
 funcDec		::=		type:t ID:id LPAREN RPAREN LBRACE stmtList:stmtStar RBRACE
-                        {: RESULT = new AstFuncdec(t, id, null, stmtStar); :}
+                        {: RESULT = new AstFuncdec(t, id, null, stmtStar, tleft); :}
 					| type:tFunc ID:idFunc LPAREN type:tParam ID:idParam c_t_id_star:paramStar RPAREN LBRACE stmtList:stmtStar RBRACE
 					    {: RESULT = new AstFuncdec(
 					        tFunc,
 					        idFunc,
-					        new NodeList<AstFuncParam>(new AstFuncParam(tParam, idParam), paramStar), /* yup */
-					        stmtStar);
+					        new NodeList<AstFuncParam>(new AstFuncParam(tParam, idParam, tParamleft), paramStar), /* yup */
+					        stmtStar,
+					        tFuncleft);
 					        :}
 					;
 
 // can be empty or more type-id pairs
 c_t_id_star	::=		/* empty */ {: RESULT = null; :}
                     | COMMA type:t ID:id c_t_id_star:star
-                        {: RESULT = new NodeList<AstFuncParam>(new AstFuncParam(t, id), star); :} /* yeah */
+                        {: RESULT = new NodeList<AstFuncParam>(new AstFuncParam(t, id, tleft), star); :} /* yeah */
                     ;
 
 // equivalent to (stmt)+
-stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l);    :}
-					| stmt:s				{: RESULT = new AstStmtList(s,null); :}
+stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AstStmtList(s,l, sleft);    :}
+					| stmt:s				{: RESULT = new AstStmtList(s,null, sleft); :}
 					;
 
-classDec	::=		CLASS ID:id LBRACE cFieldList:fields RBRACE {: RESULT = new AstClassDec(id, fields); :}
-					| CLASS ID:id EXTENDS ID:supercls LBRACE cFieldList:fields RBRACE {: RESULT = new AstClassDec(id, supercls, fields); :}
+classDec	::=		CLASS:c ID:id LBRACE cFieldList:fields RBRACE {: RESULT = new AstClassDec(id, fields, cleft); :}
+					| CLASS:c ID:id EXTENDS ID:supercls LBRACE cFieldList:fields RBRACE {: RESULT = new AstClassDec(id, supercls, fields, cleft); :}
 					;
 
 // class field can be either a varDec or funcDec
-cField		::=		varDec:v {: RESULT = new AstCfieldVar(v); :}
-					| funcDec:f {: RESULT = new AstCfieldFunc(f); :}
+cField		::=		varDec:v {: RESULT = new AstCfieldVar(v, vleft); :}
+					| funcDec:f {: RESULT = new AstCfieldFunc(f, fleft); :}
 					;
 
 cFieldList ::= cField:f cFieldList:star {: RESULT = new NodeList<AstCfield>(f, star); :}
                    | cField:f {: RESULT = new NodeList<AstCfield>(f, null); :}
                    ;
 
-arrayTypedef	::=	ARRAY ID:id EQ type:type LBRACK RBRACK SEMICOLON {: RESULT = new AstDecArraytypedef(id, type); :}
+arrayTypedef	::=	ARRAY:a ID:id EQ type:type LBRACK RBRACK SEMICOLON {: RESULT = new AstDecArraytypedef(id, type, aleft); :}
 					;
 
-exp			::=		var:v {: RESULT = new AstExpVar(v); :}
+exp			::=		var:v {: RESULT = new AstExpVar(v, vleft); :}
 					| LPAREN exp:e RPAREN {: RESULT = e; :}
-					| exp:e1 PLUS exp:e2 {: RESULT = new AstExpPlus(e1, e2); :}
-					| exp:e1 MINUS exp:e2 {: RESULT = new AstExpMinus(e1, e2); :}
-                    | exp:e1 TIMES exp:e2 {: RESULT = new AstExpTimes(e1, e2); :}
-                    | exp:e1 DIVIDE exp:e2 {: RESULT = new AstExpDivide(e1, e2); :}
-                    | exp:e1 LT exp:e2 {: RESULT = new AstExpLt(e1, e2); :}
-                    | exp:e1 GT exp:e2 {: RESULT = new AstExpGt(e1, e2); :}
-                    | exp:e1 EQ exp:e2 {: RESULT = new AstExpEq(e1, e2); :}
-					| ID:funcName LPAREN RPAREN {: RESULT = new AstExpFunc(funcName); :}
-					| var:v DOT ID:funcName LPAREN RPAREN {: RESULT = new AstExpMethod(v, funcName); :}
+					| exp:e1 PLUS exp:e2 {: RESULT = new AstExpPlus(e1, e2, e1left); :}
+					| exp:e1 MINUS exp:e2 {: RESULT = new AstExpMinus(e1, e2, e1left); :}
+                    | exp:e1 TIMES exp:e2 {: RESULT = new AstExpTimes(e1, e2, e1left); :}
+                    | exp:e1 DIVIDE exp:e2 {: RESULT = new AstExpDivide(e1, e2, e1left); :}
+                    | exp:e1 LT exp:e2 {: RESULT = new AstExpLt(e1, e2, e1left); :}
+                    | exp:e1 GT exp:e2 {: RESULT = new AstExpGt(e1, e2, e1left); :}
+                    | exp:e1 EQ exp:e2 {: RESULT = new AstExpEq(e1, e2, e1left); :}
+					| ID:funcName LPAREN RPAREN {: RESULT = new AstExpFunc(funcName, funcNameleft); :}
+					| var:v DOT ID:funcName LPAREN RPAREN {: RESULT = new AstExpMethod(v, funcName, vleft); :}
 					| ID:funcName LPAREN exp:e c_exp_star:eStar RPAREN
-					    {: RESULT = new AstExpFunc(funcName, new NodeList<AstExp>(e, eStar)); :}
+					    {: RESULT = new AstExpFunc(funcName, new NodeList<AstExp>(e, eStar), funcNameleft); :}
 					| var:v DOT ID:funcName LPAREN exp:e c_exp_star:eStar RPAREN
-					    {: RESULT = new AstExpMethod(v, funcName, new NodeList<AstExp>(e, eStar)); :}
-					| INT:i	{: RESULT = new AstExpInt(i);          :}
-					| MINUS INT:i {: RESULT = new AstExpInt(-i);          :}
-					| NIL {: RESULT = new AstExpNil(); :}
-					| STRING:v {: RESULT = new AstExpString(v); :}
+					    {: RESULT = new AstExpMethod(v, funcName, new NodeList<AstExp>(e, eStar), vleft); :}
+					| INT:i	{: RESULT = new AstExpInt(i, ileft);          :}
+					| MINUS:m INT:i {: RESULT = new AstExpInt(-i, mleft);          :}
+					| NIL:n {: RESULT = new AstExpNil(nleft); :}
+					| STRING:v {: RESULT = new AstExpString(v, vleft); :}
 					;
 
 // equivalent to (COMMA exp)+
@@ -238,24 +239,24 @@ c_exp_star	::=		/* empty */ {: RESULT = null; :}
                     | COMMA exp:e c_exp_star:eStar {: RESULT = new NodeList<AstExp>(e, eStar); :}
                     ;
 
-var			::=		ID:name								{: RESULT = new AstVarSimple(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AstVarField(v,fieldName); :}
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e);     :}
+var			::=		ID:name								{: RESULT = new AstVarSimple(name, nameleft);       :}
+					| var:v DOT ID:fieldName			{: RESULT = new AstVarField(v,fieldName, vleft); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AstVarSubscript(v,e, vleft);     :}
 					;
 
-stmt		::=		varDec:d {: RESULT = new AstStmtVardec(d); :}
-					| var:v ASSIGN exp:e SEMICOLON	{: RESULT = new AstStmtAssign(v,e); :}
-					| var:v ASSIGN newExp:e SEMICOLON  {: RESULT = new AstStmtAssign(v,e); :}
-					| RETURN SEMICOLON {: RESULT = new AstStmtReturn(); :}
-					| RETURN exp:e SEMICOLON {: RESULT = new AstStmtReturn(e); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtIf(cond,body); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:ifBody RBRACE ELSE LBRACE stmtList:elseBody RBRACE{: RESULT = new AstStmtIfElse(cond,ifBody,elseBody); :}
-					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtWhile(cond,body); :}
-					| ID:id LPAREN RPAREN SEMICOLON {: RESULT = new AstStmtFunc(id); :}
+stmt		::=		varDec:d {: RESULT = new AstStmtVardec(d, dleft); :}
+					| var:v ASSIGN exp:e SEMICOLON	{: RESULT = new AstStmtAssign(v,e, vleft); :}
+					| var:v ASSIGN newExp:e SEMICOLON  {: RESULT = new AstStmtAssign(v,e, vleft); :}
+					| RETURN:r SEMICOLON {: RESULT = new AstStmtReturn(rleft); :}
+					| RETURN:r exp:e SEMICOLON {: RESULT = new AstStmtReturn(e, rleft); :}
+					| IF:i    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtIf(cond,body, ileft); :}
+					| IF:i    LPAREN exp:cond RPAREN LBRACE stmtList:ifBody RBRACE ELSE LBRACE stmtList:elseBody RBRACE{: RESULT = new AstStmtIfElse(cond,ifBody,elseBody, ileft); :}
+					| WHILE:w LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AstStmtWhile(cond,body, wleft); :}
+					| ID:id LPAREN RPAREN SEMICOLON {: RESULT = new AstStmtFunc(id, idleft); :}
 					| ID:id LPAREN exp:e c_exp_star:eStar RPAREN SEMICOLON
-					    {: RESULT = new AstStmtFunc( id, new NodeList<AstExp>(e, eStar)); :}
-					| var:v DOT ID:field LPAREN RPAREN SEMICOLON {: RESULT = new AstStmtMethod(v, field); :}
+					    {: RESULT = new AstStmtFunc( id, new NodeList<AstExp>(e, eStar), idleft); :}
+					| var:v DOT ID:field LPAREN RPAREN SEMICOLON {: RESULT = new AstStmtMethod(v, field, vleft); :}
 					| var:v DOT ID:field LPAREN exp:e c_exp_star:eStar RPAREN SEMICOLON
-					    {: RESULT = new AstStmtMethod(v, field, new NodeList<AstExp>(e, eStar)); :}
+					    {: RESULT = new AstStmtMethod(v, field, new NodeList<AstExp>(e, eStar), vleft); :}
 					;
 
