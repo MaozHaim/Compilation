@@ -1,5 +1,6 @@
 package ast;
 
+import symboltable.SymbolTable;
 import types.*;
 
 import java.util.Arrays;
@@ -33,7 +34,7 @@ public AstExp exp;
     Type expectedReturnType = symbolTable.getExpectedReturnType();
 
     // void function
-    if (expectedReturnType instanceof typeVoid){
+    if (expectedReturnType instanceof TypeVoid){
       if (exp == null) {
         return null;
       }

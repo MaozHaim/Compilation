@@ -3,8 +3,11 @@ package ast;
 import types.Type;
 import types.TypeFunction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static utils.Utils.matchTypesArgsParams;
 
 public class AstStmtFunc extends AstStmt {
     public String id;

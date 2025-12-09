@@ -1,5 +1,9 @@
 package ast;
 
+import symboltable.SymbolTable;
+import types.Type;
+import types.TypeInt;
+
 import java.util.Arrays;
 import java.util.List;
 
