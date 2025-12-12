@@ -14,6 +14,7 @@ public class AstVardec extends AstDec{
     super("varDec -> type ID SEMICOLON", lineNum); // int x;
     this.type = type;
     this.id = id;
+    this.exp = null;
   }
 
   // this also accepts newExp (since it inherits from exp) - surely this will have no consequences whatsoever
@@ -50,10 +51,6 @@ public class AstVardec extends AstDec{
 
     Type exptype = exp.SemantMe();
 
-    if (exptype.equals(vartype)) {
-      return vartype;
-    } 
-
     if (vartype.isArray()){
       arraySemantCheck((TypeArray)vartype, exptype);
       return vartype;
@@ -63,6 +60,10 @@ public class AstVardec extends AstDec{
       classSemantCheck((TypeClass)vartype, exptype);
       return vartype;
     }
+
+    if (exptype.equals(vartype)) {
+      return vartype;
+    } 
 
     throwException("Type mismatch");
     return null; // never reaches this point
@@ -84,17 +85,18 @@ public class AstVardec extends AstDec{
   }
 
   private void classSemantCheck(TypeClass leftClass, Type rightType){
-    if (!(rightType instanceof TypeClass)) {
-      if(!(rightType instanceof TypeNil)) {// nil is valid to class
-        throwException("expression must be of class type");
-      }
-      else return;
-
-      TypeClass rightClass = (TypeClass) rightType;
-
-      if (!rightClass.isSubtypeOf(leftClass)) {
-        throwException("Expression does not inherit from variable's class");
-      }
+    if (rightType instanceof TypeNil) {
+        return;
     }
-  }
+
+    if (!(rightType instanceof TypeClass)) {
+        throwException("expression must be of class type");
+    }
+
+    TypeClass rightClass = (TypeClass) rightType;
+
+    if (!rightClass.isSubtypeOf(leftClass)) {
+        throwException("Expression does not inherit from variable's class");
+    }
+}
 }

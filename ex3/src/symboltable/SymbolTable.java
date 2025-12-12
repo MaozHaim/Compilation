@@ -188,6 +188,7 @@ public class SymbolTable
 		table[top.index] = top.next;
 		topIndex = topIndex -1;
 		top = top.prevtop;
+		scopeCounter--;
 
 		printMe(); // Print the symbol table after every change
 	}
@@ -283,10 +284,11 @@ public class SymbolTable
 					/* [4b] Print entry(i,it) node */
 					/*******************************/
 					fileWriter.format("node_%d_%d ",i,j);
-					fileWriter.format("[label=\"<f0>%s|<f1>%s|<f2>prevtop=%d|<f3>next\"];\n",
+					fileWriter.format("[label=\"<f0>%s|<f1>%s|<f2>prevtop=%d|<f3>next|<f4>scope=%d\"];\n",
 						it.name,
 						it.type.name,
-						it.prevtopIndex);
+						it.prevtopIndex,
+						it.scope);
 
 					if (it.next != null)
 					{
