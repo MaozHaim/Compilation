@@ -1,0 +1,19 @@
+# Compiled class files
+bin/
+out/
+
+# Generated parser/lexer files (from CUP and JFlex)
+**/src/Lexer.java
+**/src/Parser.java
+**/src/TokenNames.java
+
+# Output files from running the compiler
+**/output/
+**/SEMANT
+
+# IntelliJ IDEA
+*.iml
+.idea/
+
+# macOS
+.DS_Store
