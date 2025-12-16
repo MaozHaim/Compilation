@@ -1,6 +1,7 @@
 package ast;
 
-import types.*;
+import types.Type;
+import types.TypeString;
 
 public class AstExpString extends AstExp {
     public String value;

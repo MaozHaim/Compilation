@@ -1,9 +1,13 @@
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import errors.SemanticException;
 import java_cup.runtime.Symbol;
-import ast.*;
+import ast.AstGraphviz;
+import ast.AstProgram;
 
 public class Main
 {

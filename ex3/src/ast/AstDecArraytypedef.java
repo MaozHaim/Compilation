@@ -1,7 +1,9 @@
 package ast;
 
-import types.*;
-import symboltable.*;
+import types.Type;
+import types.TypeArray;
+import types.TypeVoid;
+import symboltable.SymbolTable;
 
 import java.util.Arrays;
 import java.util.List;

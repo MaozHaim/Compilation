@@ -1,6 +1,7 @@
 package ast;
 
-import types.*;
+import types.Type;
+import types.TypeNil;
 
 public class AstExpNil extends AstExp {
     public AstExpNil(int lineNum) {

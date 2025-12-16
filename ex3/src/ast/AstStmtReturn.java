@@ -1,7 +1,11 @@
 package ast;
 
 import symboltable.SymbolTable;
-import types.*;
+import types.Type;
+import types.TypeArray;
+import types.TypeClass;
+import types.TypeNil;
+import types.TypeVoid;
 
 import java.util.Arrays;
 import java.util.List;

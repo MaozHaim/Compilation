@@ -1,7 +1,8 @@
 package ast;
 
-import types.*;
-import utils.*;
+import types.Type;
+import types.TypeFunction;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
