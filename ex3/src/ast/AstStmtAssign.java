@@ -50,7 +50,7 @@ public class AstStmtAssign extends AstStmt
 		}
 
 		throwException("Type mismatch");
-		return null; // cant reach this point
+		return null; // can't reach this point
 	}
 
 	private void arraySemantCheck(TypeArray leftArr, Type rightType, boolean isNewExp){

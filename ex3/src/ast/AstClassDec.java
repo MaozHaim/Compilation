@@ -21,6 +21,7 @@ public class AstClassDec extends AstDec{
     public AstClassDec(String id, NodeList<AstCfield> fields, int lineNum){
         super("CLASS ID EXTENDS ID LBRACE cField (cField)* RBRACE", lineNum);
         this.id = id;
+        this.superclass = null;
         this.fields = fields.unroll();
     }
 
