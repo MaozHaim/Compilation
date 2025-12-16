@@ -39,6 +39,10 @@ public class AstVarSubscript extends AstVar
 			throwException("Index must be an integer.");
 		}
 
+		if (subscript instanceof AstExpInt && ((AstExpInt) subscript).value < 0) {
+			throwException("Array index cannot be negative.");
+		}
+
 		Type varType = var.SemantMe();
 
 		if (!(varType.isArray())) {

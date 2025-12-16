@@ -1,6 +1,7 @@
 package ast;
 
 import types.Type;
+import types.TypeVoid;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +30,9 @@ public class AstFuncParam extends AstNode {
     @Override
     public Type SemantMe() {
         Type paramType = type.SemantMe();
+        if (paramType instanceof TypeVoid) {
+            throwException("Cannot use void type for function parameters.");
+        }
         tryTableEnter(id, paramType);
         return paramType;
     }
