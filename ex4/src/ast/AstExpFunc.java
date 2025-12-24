@@ -1,5 +1,7 @@
 package ast;
 
+import ir.Ir;
+import temp.Temp;
 import types.Type;
 import types.TypeFunction;
 import utils.Utils;
@@ -60,5 +62,23 @@ public class AstExpFunc extends AstExp {
         if (!argsAreValid) { throwException("Mismatch between arguments and parameters."); }
 
         return functionData.returnType;
+    }
+
+
+    @Override
+    public Temp IRme() {
+        Temp t = null;
+
+        if (!exps.isEmpty()) {
+            // grab only the first parameter of the function
+            t = exps.get(0).IRme();
+            for (int i = 1; i < exps.size(); i++){
+                exps.get(i).IRme();
+            }
+        }
+
+        Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+
+        return null;
     }
 }

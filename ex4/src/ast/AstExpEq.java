@@ -1,5 +1,9 @@
 package ast;
 
+import ir.Ir;
+import ir.IrCommand;
+import ir.IrCommandEq;
+import temp.Temp;
 import types.Type;
 import types.TypeArray;
 import types.TypeClass;
@@ -67,5 +71,25 @@ public class AstExpEq extends AstExp
 		}
 		throwException("Illegal EQ operation");
 		return null; // Unreachable
+	}
+
+
+	@Override
+	public Temp IRme() {
+		Temp t1 = null;
+		Temp t2 = null;
+		Temp dst = new Temp();
+
+		if (left  != null) {
+			t1 = left.IRme();
+		}
+		if (right != null) {
+			t2 = right.IRme();
+		}
+
+		IrCommand command = new IrCommandEq(dst, t1, t2);
+		Ir.getInstance().AddIrCommand(command);
+
+		return dst;
 	}
 }

@@ -1,24 +1,15 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+public abstract class IrCommand {
+	protected static int labelCounter = 0; /* Label Factory */
+	private static int index_counter = 0;
+	public int index;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
+	public IrCommand() { index = index_counter++; }
 
-public abstract class IrCommand
-{
-	/*****************/
-	/* Label Factory */
-	/*****************/
-	protected static int labelCounter = 0;
-	public    static String getFreshLabel(String msg)
+
+	public static String getFreshLabel(String msg)
 	{
-		return String.format("Label_%d_%s", labelCounter++,msg);
+		return String.format("Label_%d_%s", labelCounter++, msg);
 	}
 }

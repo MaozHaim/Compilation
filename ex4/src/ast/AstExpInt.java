@@ -1,5 +1,7 @@
 package ast;
 
+import ir.Ir;
+import temp.Temp;
 import types.Type;
 import types.TypeInt;
 
@@ -16,7 +18,7 @@ public class AstExpInt extends AstExp
 
 	@Override
 	protected String GetNodeName() {
-		return String.format("INT(%d)",value);
+		return String.format("INT(%d)", value);
 	}
 
 
@@ -26,7 +28,16 @@ public class AstExpInt extends AstExp
 	}
 
 
+	@Override
 	public Type SemantMe() {
 		return TypeInt.getInstance();
+	}
+
+
+	@Override
+	public Temp IRme() {
+		Temp t = new Temp();
+		Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
+		return t;
 	}
 }

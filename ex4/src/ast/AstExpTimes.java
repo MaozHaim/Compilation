@@ -1,5 +1,9 @@
 package ast;
 
+import ir.Ir;
+import ir.IrCommand;
+import ir.IrCommandTimes;
+import temp.Temp;
 import types.Type;
 import types.TypeInt;
 
@@ -51,5 +55,25 @@ public class AstExpTimes extends AstExp
 			throwException("TIMES - Operation defined only for integers.");
 		}
 		return typeLeft;
+	}
+
+
+	@Override
+	public Temp IRme() {
+		Temp t1 = null;
+		Temp t2 = null;
+		Temp dst = new Temp();
+
+		if (left  != null) {
+			t1 = left.IRme();
+		}
+		if (right != null) {
+			t2 = right.IRme();
+		}
+
+		IrCommand command = new IrCommandTimes(dst, t1, t2);
+		Ir.getInstance().AddIrCommand(command);
+
+		return dst;
 	}
 }

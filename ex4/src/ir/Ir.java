@@ -1,67 +1,51 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
 
-public class Ir
-{
-	private IrCommand head=null;
-	private IrCommandList tail=null;
+public class Ir {
+	private List<IrCommand> commands;
 
-	/******************/
-	/* Add Ir command */
-	/******************/
-	public void AddIrCommand(IrCommand cmd)
-	{
-		if ((head == null) && (tail == null))
-		{
-			this.head = cmd;
-		}
-		else if ((head != null) && (tail == null))
-		{
-			this.tail = new IrCommandList(cmd,null);
-		}
-		else
-		{
-			IrCommandList it = tail;
-			while ((it != null) && (it.tail != null))
-			{
-				it = it.tail;
-			}
-			it.tail = new IrCommandList(cmd,null);
-		}
+
+	protected Ir() {
+		commands = new ArrayList<>();
 	}
 
-	/**************************************/
-	/* USUAL SINGLETON IMPLEMENTATION ... */
-	/**************************************/
+
+	public List<IrCommand> getCommands() {
+		return commands;
+	}
+
+
+	public void AddIrCommand(IrCommand cmd) { commands.add(cmd); }
+
+
+	/*** Singleton Implementation ***/
 	private static Ir instance = null;
-
-	/*****************************/
-	/* PREVENT INSTANTIATION ... */
-	/*****************************/
-	protected Ir() {}
-
-	/******************************/
-	/* GET SINGLETON INSTANCE ... */
-	/******************************/
-	public static Ir getInstance()
-	{
-		if (instance == null)
-		{
-			/*******************************/
-			/* [0] The instance itself ... */
-			/*******************************/
+	public static Ir getInstance() {
+		if (instance == null) {
 			instance = new Ir();
 		}
 		return instance;
 	}
 }
+
+/**
+ * IRcommand <-> IRcommand <-> IRcommand <-> ... <-> IRcommand
+ * We have a list of IRcommands
+ * Each label is associated with its own IRcommand
+ * Each jump is also associated with its own IRcommand
+ *
+ * Do we really need an index?
+ * For each label (string), keep a pointer to its associated IRcommand.
+ * Each jump is literally just an IR command.
+ *
+ *
+ * int i = 0;
+ * while (i <= size) {
+ *     IRcommand = list.get(i)
+ *     if (IRcommand instanceof Label)
+ * }
+ */

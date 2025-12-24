@@ -1,5 +1,9 @@
 package ast;
 
+import ir.Ir;
+import ir.IrCommand;
+import ir.IrCommandMinus;
+import temp.Temp;
 import types.Type;
 import types.TypeInt;
 
@@ -51,5 +55,25 @@ public class AstExpMinus extends AstExp
 			throwException("MINUS - Operation defined only for integers.");
 		}
 		return typeLeft;
+	}
+
+
+	@Override
+	public Temp IRme() {
+		Temp t1 = null;
+		Temp t2 = null;
+		Temp dst = new Temp();
+
+		if (left  != null) {
+			t1 = left.IRme();
+		}
+		if (right != null) {
+			t2 = right.IRme();
+		}
+
+		IrCommand command = new IrCommandMinus(dst, t1, t2);
+		Ir.getInstance().AddIrCommand(command);
+
+		return dst;
 	}
 }
