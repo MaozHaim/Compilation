@@ -18,7 +18,7 @@ public class Main
 		Lexer l;
 		Parser p;
 		Symbol s;
-		AstDecList ast;
+		AstProgram ast;
 		CFG cfg;
 		FileReader fileReader;
 		PrintWriter fileWriter;
@@ -50,7 +50,7 @@ public class Main
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
 			/***********************************/
-			ast = (AstDecList) p.parse().value;
+			ast = (AstProgram) p.parse().value;
 
 			/*************************/
 			/* [6] Print the AST ... */
@@ -60,7 +60,7 @@ public class Main
 			/**************************/
 			/* [7] Semant the AST ... */
 			/**************************/
-			ast.semantMe();
+			ast.SemantMe();
 
 			/**********************/
 			/* [8] IR the AST ... */
