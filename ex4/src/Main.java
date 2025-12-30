@@ -116,6 +116,35 @@ public class Main
 			e.printStackTrace();
 		}
 	}
+
+	public static void writeStatusToFile(int lineNumber, String status, String PATH) {
+		try {
+			FileWriter fw = new FileWriter(PATH);
+			BufferedWriter writer = new BufferedWriter(fw);
+
+			if (status.equals("ERROR")) {
+				if (lineNumber >= 0) {
+					writer.write("ERROR(" + lineNumber + ")");
+				} else {
+					writer.write("ERROR");
+				}
+			}
+			else if (status.equals("SUCCESS")) {
+				writer.write("OK");
+				System.out.println("\n SUCCESS!");
+			}
+			else {
+				writer.close();
+				throw new IOException("Incorrect status code when writing to file.");
+			}
+
+			writer.close();
+		}
+		catch (IOException e) {
+			System.out.println("ERROR WHEN OPENING FILE.");
+			e.printStackTrace();
+		}
+	}
 }
 
 

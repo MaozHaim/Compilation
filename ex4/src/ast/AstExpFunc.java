@@ -1,6 +1,7 @@
 package ast;
 
 import ir.Ir;
+import ir.IrCommandPrintInt;
 import temp.Temp;
 import types.Type;
 import types.TypeFunction;

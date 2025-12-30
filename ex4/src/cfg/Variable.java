@@ -23,7 +23,8 @@ public class Variable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Variable variable) {
+        if (o instanceof Variable) {
+            Variable variable = (Variable) o;
             return (this.name).equals(variable.name);
         }
         return false;

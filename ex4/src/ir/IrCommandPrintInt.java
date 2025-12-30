@@ -2,11 +2,12 @@ package ir;
 
 import temp.Temp;
 
-public class IrCommandPrintInt {
+public class IrCommandPrintInt extends IrCommand {
     Temp t;
 
     public IrCommandPrintInt(Temp t)
     {
+        super();
         this.t = t;
     }
 

@@ -90,7 +90,8 @@ public class AstStmtAssign extends AstStmt
 	public Temp IRme() {
 		Temp src = exp.IRme();
 
-		if (var instanceof AstVarSimple simplevar){
+		if (var instanceof AstVarSimple){
+			AstVarSimple simplevar = (AstVarSimple) var;
 			Ir.getInstance().AddIrCommand( new IrCommandStore(simplevar.name, src));
 		}
 

@@ -108,11 +108,11 @@ public class CFGBlock {
 
         boolean changed = false;
 
-        if (command instanceof IrCommandBinop binop) updateWithBinop(binop);
-        else if (command instanceof IrCommandLoad load) updateWithLoad(load);
-        else if (command instanceof IrCommandStore store) updateWithStore(store);
-        else if (command instanceof IrCommandConstInt constInt) updateWithConst(constInt);
-        else if (command instanceof IrCommandAllocate allocate) updateWithAlloc(allocate);
+        if (command instanceof IrCommandBinop) updateWithBinop((IrCommandBinop) command);
+        else if (command instanceof IrCommandLoad) updateWithLoad((IrCommandLoad) command);
+        else if (command instanceof IrCommandStore) updateWithStore((IrCommandStore) command);
+        else if (command instanceof IrCommandConstInt) updateWithConst((IrCommandConstInt) command);
+        else if (command instanceof IrCommandAllocate) updateWithAlloc((IrCommandAllocate) command);
 
         return changed;
     }

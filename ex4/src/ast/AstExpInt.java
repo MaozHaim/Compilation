@@ -1,6 +1,7 @@
 package ast;
 
 import ir.Ir;
+import ir.IrCommandConstInt;
 import temp.Temp;
 import types.Type;
 import types.TypeInt;
@@ -37,7 +38,7 @@ public class AstExpInt extends AstExp
 	@Override
 	public Temp IRme() {
 		Temp t = new Temp();
-		Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
+		Ir.getInstance().AddIrCommand(new IrCommandConstInt(t,value));
 		return t;
 	}
 }

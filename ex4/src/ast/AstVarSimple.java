@@ -31,7 +31,7 @@ public class AstVarSimple extends AstVar
 	}
 
 	public Temp IRme() {
-		Temp t = new TEMP();
+		Temp t = new Temp();
 		Ir.getInstance().AddIrCommand(new IrCommandLoad(t,name));
 		return t;
 	}

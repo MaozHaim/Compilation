@@ -1,13 +1,8 @@
 package ast;
 
+import temp.Temp;
 import types.Type;
-import types.TypeFunction;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import static utils.Utils.matchTypesArgsParams;
 
 public class AstStmtFunc extends AstStmt {
     public AstExpFunc func;
@@ -25,12 +20,12 @@ public class AstStmtFunc extends AstStmt {
 
     @Override
     protected String GetNodeName() {
-        return String.format("STMT\n%s(%s)", id, (args != null ? "PARAMS" : ""));
+        return String.format("STMT\n%s(%s)", func.id, (func.exps != null && !func.exps.isEmpty() ? "PARAMS" : ""));
     }
 
     @Override
     protected List<? extends AstNode> GetChildren() {
-        return args;
+        return func.exps;
     }
 
     public Type SemantMe() {

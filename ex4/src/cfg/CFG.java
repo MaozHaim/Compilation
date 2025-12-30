@@ -47,7 +47,8 @@ public class CFG {
 
         for (CFGBlock block: blocks){
             IrCommand command = block.getBody().get(0);
-            if (command instanceof IrCommandLoad load){
+            if (command instanceof IrCommandLoad){
+                IrCommandLoad load = (IrCommandLoad) command;
                 Variable loaded = block.getOut().get(load.varName);
                 if (loaded.state == State.UNINITIALIZED){
                     uninitializedVars.add(loaded.name);
@@ -99,14 +100,15 @@ public class CFG {
             CFGBlock block = blocks.get(i);
             IrCommand command = block.getBody().get(0); // They're exclusively single commands as of now
             addVarOrTemp(command, varsAndTemps);
-            if (command instanceof IrCommandJumpType jumpCommand) { // FOR PROJECT: handle functions. label "endmain"?
+            if (command instanceof IrCommandJumpType) { // FOR PROJECT: handle functions. label "endmain"?
+                IrCommandJumpType jumpCommand = (IrCommandJumpType) command;
                 String jumpToLabel = jumpCommand.label_name;
                 int jumpLabelIndex = labelToIndex.get(jumpToLabel);
                 CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);
                 block.addChild(jumpToBlock);
                 jumpToBlock.addParent(block);
             }
-            if (!(command instanceof IrCommandJumpLabel unconditionalJump || // not while loop, backward edge
+            if (!(command instanceof IrCommandJumpLabel || // not while loop, backward edge
                     i == blocks.size() - 1)) { // Last node
                 block.addChild(blocks.get(i+1));
                 blocks.get(i+1).addParent(block);
@@ -118,16 +120,16 @@ public class CFG {
 
     private void addVarOrTemp(IrCommand command, Set<String> nameSet) {
         String name = null;
-        if (command instanceof IrCommandStore store)
-            name = store.varName;
-        else if (command instanceof IrCommandLoad load)
-            name = TEMP_CHAR + load.dst.getSerialNumber();
-        else if (command instanceof IrCommandBinop binop)
-            name = TEMP_CHAR + binop.dst.getSerialNumber();
-        else if (command instanceof IrCommandAllocate allocate)
-            name = allocate.var_name;
-        else if (command instanceof IrCommandConstInt constInt)
-            name = TEMP_CHAR + constInt.t.getSerialNumber();
+        if (command instanceof IrCommandStore)
+            name = ((IrCommandStore) command).varName;
+        else if (command instanceof IrCommandLoad)
+            name = TEMP_CHAR + ((IrCommandLoad) command).dst.getSerialNumber();
+        else if (command instanceof IrCommandBinop)
+            name = TEMP_CHAR + ((IrCommandBinop) command).dst.getSerialNumber();
+        else if (command instanceof IrCommandAllocate)
+            name = ((IrCommandAllocate) command).var_name;
+        else if (command instanceof IrCommandConstInt)
+            name = TEMP_CHAR + ((IrCommandConstInt) command).t.getSerialNumber();
 
 
         if (name == null) return;
@@ -153,7 +155,8 @@ public class CFG {
         Map<String, Integer> labelIndices = new HashMap<>();
         for (int i = 0; i < commands.size(); i++) {
             IrCommand currentCommand = commands.get(i);
-            if (currentCommand instanceof IrCommandLabel curr) {
+            if (currentCommand instanceof IrCommandLabel) {
+                IrCommandLabel curr = (IrCommandLabel) currentCommand;
                 labelIndices.put(curr.labelName, i);
             }
         }
