@@ -59,26 +59,24 @@ public class Main {
 			/**************************/
 			ast.SemantMe();
 
+			/*************************************/
+			/* [8] Finalize AST GRAPHIZ DOT file */
+			/*************************************/
+			fileWriter.close();
+			AstGraphviz.getInstance().finalizeFile();
+
 			/**********************/
-			/* [8] IR the AST ... */
+			/* [9] IR the AST ... */
 			/**********************/
 			ast.IRme();
+
+			/**********************/
+			/* [10] DFA the IR    */
+			/**********************/
 			cfg = new CFG(Ir.getInstance().getCommands());
-
-			/**************************/
-			/* [8.5] Close PrintWriter before writing */
-			/**************************/
-			fileWriter.close();
-
 			writeUndeclaredToFile(cfg, outputFileName);
 			System.out.println("End of declaration analysis");
-
-			/*************************************/
-			/* [10] Finalize AST GRAPHIZ DOT file */
-			/*************************************/
-			AstGraphviz.getInstance().finalizeFile();
 		}
-
 		catch (Exception e) {
 			e.printStackTrace();
 		}
