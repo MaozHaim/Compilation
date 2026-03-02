@@ -1,7 +1,17 @@
 package ast;
 
-import types.*;
-import symboltable.*;
+import symboltable.SymbolTable;
+import types.Type;
+import types.TypeInt;
+
+import temp.Temp;
+import ir.Ir;
+import ir.IrCommand;
+import ir.IrCommandLabel;
+import ir.IrCommandJumpIfEqZero;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AstStmtIf extends AstStmt
 {
@@ -11,75 +21,52 @@ public class AstStmtIf extends AstStmt
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AstStmtIf(AstExp cond, AstStmtList body)
+	public AstStmtIf(AstExp cond, AstStmtList body, int lineNum)
 	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
-
+		super("IF LPAREN exp RPAREN LBRACE stmtlist RBRACE", lineNum); // if (exp) {...}
 		this.cond = cond;
 		this.body = body;
 	}
 
-	/****************************************************/
-	/* The printing message for an if statment AST node */
-	/****************************************************/
-	public void printMe()
-	{
-		/*************************************/
-		/* AST NODE TYPE = AST SUBSCRIPT VAR */
-		/*************************************/
-		System.out.print("AST NODE STMT IF\n");
-
-		/**************************************/
-		/* RECURSIVELY PRINT left + right ... */
-		/**************************************/
-		if (cond != null) cond.printMe();
-		if (body != null) body.printMe();
-
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
-		AstGraphviz.getInstance().logNode(
-                serialNumber,
-			"IF (left)\nTHEN right");
-		
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		if (cond != null) AstGraphviz.getInstance().logEdge(serialNumber,cond.serialNumber);
-		if (body != null) AstGraphviz.getInstance().logEdge(serialNumber,body.serialNumber);
+	@Override
+	protected String GetNodeName() {
+		return "IF\n(EXP) {STMTLIST}";
 	}
 
-	public Type semantMe()
-	{
-		/****************************/
-		/* [0] Semant the Condition */
-		/****************************/
-		if (cond.semantMe() != TypeInt.getInstance())
-		{
-			System.out.format(">> ERROR [%d:%d] condition inside IF is not integral\n",2,2);
+	@Override
+	protected List<? extends AstNode> GetChildren() {
+		return Arrays.asList(cond, body);
+	}
+
+	public Type SemantMe() {
+		SymbolTable symbolTable = SymbolTable.getInstance();
+		Type conditionType = cond.SemantMe();
+
+		if (!(conditionType instanceof TypeInt)) {
+			throwException("Conditions must be of type INT.");
 		}
-		
-		/*************************/
-		/* [1] Begin If Scope */
-		/*************************/
-		SymbolTable.getInstance().beginScope();
 
-		/***************************/
-		/* [2] Semant Data Members */
-		/***************************/
-		body.semantMe();
+		symbolTable.beginScope();
 
-		/*****************/
-		/* [3] End Scope */
-		/*****************/
-		SymbolTable.getInstance().endScope();
+		if (body != null) { 
+			body.SemantMe(); 
+		}
 
-		/***************************************************/
-		/* [4] Return value is irrelevant for if statement */
-		/**************************************************/
-		return null;		
-	}	
+		symbolTable.endScope();
+		return null;
+	}
+
+	public Temp IRme() {
+		Ir irList = Ir.getInstance();
+		String startLabel = IrCommand.getFreshLabel("start");
+		String endLabel = IrCommand.getFreshLabel("end");
+
+		irList.AddIrCommand(new IrCommandLabel(startLabel));
+		irList.AddIrCommand(new IrCommandJumpIfEqZero(cond.IRme(), endLabel));
+		if (body != null) { body.IRme(); }
+
+ 		irList.AddIrCommand(new IrCommandLabel(endLabel));
+
+		return null;
+	}
 }

@@ -1,54 +1,44 @@
 package ast;
 
-import types.*;
-import temp.*;
-import ir.*;
+import ir.Ir;
+import ir.IrCommandConstInt;
+import temp.Temp;
+import types.Type;
+import types.TypeInt;
 
 public class AstExpInt extends AstExp
 {
 	public int value;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstExpInt(int value)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
 
-		System.out.format("====================== exp -> INT( %d )\n", value);
+	public AstExpInt(int value, int lineNum)
+	{
+		super("exp -> INT( %d )", lineNum);
 		this.value = value;
 	}
 
-	/************************************************/
-	/* The printing message for an INT EXP AST node */
-	/************************************************/
-	public void printMe()
-	{
-		/*******************************/
-		/* AST NODE TYPE = AST INT EXP */
-		/*******************************/
-		System.out.format("AST NODE INT( %d )\n",value);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
-		AstGraphviz.getInstance().logNode(
-                serialNumber,
-			String.format("INT(%d)",value));
+	@Override
+	protected String GetNodeName() {
+		return String.format("INT(%d)", value);
 	}
 
-	public Type semantMe()
-	{
+
+	@Override
+	public boolean isConstant() {
+		return true;
+	}
+
+
+	@Override
+	public Type SemantMe() {
 		return TypeInt.getInstance();
 	}
 
-	public Temp irMe()
-	{
-		Temp t = TempFactory.getInstance().getFreshTemp();
-		Ir.getInstance().AddIrCommand(new IRcommandConstInt(t,value));
+
+	@Override
+	public Temp IRme() {
+		Temp t = new Temp();
+		Ir.getInstance().AddIrCommand(new IrCommandConstInt(t,value));
 		return t;
 	}
 }

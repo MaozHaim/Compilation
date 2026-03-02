@@ -1,14 +1,12 @@
 package ast;
 
-import types.*;
-
 public abstract class AstExp extends AstNode
 {
-	/***********************************************/
-	/* The default semantic action for an AST node */
-	/***********************************************/
-	public Type semantMe()
-	{
-		return null;
+    public AstExp(String derivation, int lineNum) {
+		super(derivation, lineNum);
 	}
+
+	// to be overridden:
+	public boolean isConstant() { return false; }
+	public boolean isNewExp() {return false; }
 }

@@ -1,7 +1,18 @@
 package ast;
 
-import temp.*;
-import ir.*;
+import symboltable.SymbolTable;
+import types.Type;
+import types.TypeInt;
+
+import temp.Temp;
+import ir.Ir;
+import ir.IrCommand;
+import ir.IrCommandJumpIfEqZero;
+import ir.IrCommandLabel;
+import ir.IrCommandJumpLabel;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AstStmtWhile extends AstStmt
 {
@@ -11,61 +22,60 @@ public class AstStmtWhile extends AstStmt
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AstStmtWhile(AstExp cond, AstStmtList body)
+	public AstStmtWhile(AstExp cond, AstStmtList body, int lineNum)
 	{
+		super("stmt -> WHILE LPAREN exp RPAREN LBRACE stmtlist RBRACE", lineNum); // while (exp) {...}
 		this.cond = cond;
 		this.body = body;
 	}
 
-	public Temp irMe()
-	{
-		/*******************************/
-		/* [1] Allocate 2 fresh labels */
-		/*******************************/
-		String labelEnd   = IrCommand.getFreshLabel("end");
-		String labelStart = IrCommand.getFreshLabel("start");
+	@Override
+	protected String GetNodeName() {
+		return "WHILE\n(COND) {BODY}";
+	}
 
-		/*********************************/
-		/* [2] entry label for the while */
-		/*********************************/
-		Ir.
-				getInstance().
-				AddIrCommand(new IrCommandLabel(labelStart));
+	@Override
+	protected List<? extends AstNode> GetChildren() {
+		return Arrays.asList(cond, body);
+	}
 
-		/********************/
-		/* [3] cond.IRme(); */
-		/********************/
-		Temp condTemp = cond.irMe();
+	public Type SemantMe() {
+		/* COPIED FROM StmtIf */
+		SymbolTable symbolTable = SymbolTable.getInstance();
+		Type conditionType = cond.SemantMe();
 
-		/******************************************/
-		/* [4] Jump conditionally to the loop end */
-		/******************************************/
-		Ir.
-				getInstance().
-				AddIrCommand(new IrCommandJumpIfEqToZero(condTemp,labelEnd));
+		if (!(conditionType instanceof TypeInt)) {
+			throwException("Conditions must be of type INT.");
+		}
 
-		/*******************/
-		/* [5] body.IRme() */
-		/*******************/
-		body.irMe();
+		symbolTable.beginScope();
 
-		/******************************/
-		/* [6] Jump to the loop entry */
-		/******************************/
-		Ir.
-				getInstance().
-				AddIrCommand(new IrCommandJumpLabel(labelStart));
+		if (body != null) { 
+			body.SemantMe(); 
+		}
 
-		/**********************/
-		/* [7] Loop end label */
-		/**********************/
-		Ir.
-				getInstance().
-				AddIrCommand(new IrCommandLabel(labelEnd));
+		symbolTable.endScope();
+		return null;
+	}
 
-		/*******************/
-		/* [8] return null */
-		/*******************/
+	/**
+	 * START: condition
+	 * 		  <body>
+	 * 		  goto START
+	 * END: <rest of code>
+	 */
+	@Override
+	public Temp IRme() {
+		String label_end = IrCommand.getFreshLabel("end");
+		String label_start = IrCommand.getFreshLabel("start");
+
+		Ir.getInstance().AddIrCommand(new IrCommandLabel(label_start));
+		Temp cond_temp = cond.IRme();
+		Ir.getInstance().AddIrCommand(new IrCommandJumpIfEqZero(cond_temp,label_end)); /* [4] Jump conditionally to the loop end */
+		body.IRme();
+		Ir.getInstance().AddIrCommand(new IrCommandJumpLabel(label_start)); /* [6] Jump to the loop entry */
+		Ir.getInstance().AddIrCommand(new IrCommandLabel(label_end)); /* [7] Loop end label */
+
 		return null;
 	}
 }

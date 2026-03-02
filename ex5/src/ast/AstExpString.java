@@ -1,45 +1,31 @@
 package ast;
 
-import types.*;
+import types.Type;
+import types.TypeString;
 
-public class AstExpString extends AstExp
-{
-	public String value;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AstExpString(String value)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
+public class AstExpString extends AstExp {
+    public String value;
 
-		System.out.format("====================== exp -> STRING( %s )\n", value);
-		this.value = value;
-	}
+    public AstExpString(String value, int lineNum) {
+        super(String.format("exp -> STRING( %s )", value), lineNum);
+        this.value = value;
+    }
 
-	/******************************************************/
-	/* The printing message for a STRING EXP AST node */
-	/******************************************************/
-	public void printMe()
-	{
-		/*******************************/
-		/* AST NODE TYPE = AST STRING EXP */
-		/*******************************/
-		System.out.format("AST NODE STRING( %s )\n",value);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
-		AstGraphviz.getInstance().logNode(
-                serialNumber,
-			String.format("STRING\n%s",value.replace('"','\'')));
-	}
+    @Override
+    protected String GetNodeName() {
+        return String.format("EXP\nSTRING( %s )", value);
+    }
 
-	public Type semantMe()
-	{
-		return TypeString.getInstance();
-	}
+
+    @Override
+    public Type SemantMe() {
+        return TypeString.getInstance();
+    }
+
+
+    @Override
+    public boolean isConstant() {
+        return true;
+    }
 }

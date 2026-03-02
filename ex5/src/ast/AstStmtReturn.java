@@ -1,50 +1,70 @@
 package ast;
 
-public class AstStmtReturn extends AstStmt
-{
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AstExp exp;
+import symboltable.SymbolTable;
+import types.Type;
+import types.TypeArray;
+import types.TypeClass;
+import types.TypeNil;
+import types.TypeVoid;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AstStmtReturn(AstExp exp)
-	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		serialNumber = AstNodeSerialNumber.getFresh();
+import java.util.Arrays;
+import java.util.List;
 
-		this.exp = exp;
-	}
+public class AstStmtReturn extends AstStmt {
+public AstExp exp;
 
-	/********************************************************/
-	/* The printing message for a return statement AST node */
-	/********************************************************/
-	public void printMe()
-	{
-		/***********************************/
-		/* AST NODE TYPE = AST RETURN STMT */
-		/***********************************/
-		System.out.print("AST NODE STMT RETURN\n");
+  public AstStmtReturn(AstExp exp, int lineNum){
+    super("stmt -> RETURN exp", lineNum); // return exp
+    this.exp = exp;
+  }
 
-		/*****************************/
-		/* RECURSIVELY PRINT exp ... */
-		/*****************************/
-		if (exp != null) exp.printMe();
+  public AstStmtReturn(int lineNum){
+    super("stmt -> RETURN", lineNum);
+  }
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
-		AstGraphviz.getInstance().logNode(
-                serialNumber,
-			"RETURN");
+  @Override
+  public String GetNodeName(){
+    return "RETURN";
+  }
 
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		if (exp != null) AstGraphviz.getInstance().logEdge(serialNumber,exp.serialNumber);
-	}
+  @Override
+  public List<? extends AstNode> GetChildren(){
+    if (exp == null) return Arrays.asList();
+    return Arrays.asList(exp);
+  }
+
+  public Type SemantMe() {
+    SymbolTable symbolTable = SymbolTable.getInstance();
+    Type expectedReturnType = symbolTable.getExpectedReturnType();
+
+    // void function
+    if (expectedReturnType instanceof TypeVoid){
+      if (exp == null) {
+        return null;
+      }
+      else {
+        throwException("Function defined as void can't have a return expression");
+      }
+    }
+
+    // not void function
+    Type returnType = exp.SemantMe();
+    if (returnType instanceof TypeClass && expectedReturnType instanceof TypeClass) {
+      if (((TypeClass)returnType).isSubtypeOf((TypeClass)expectedReturnType)) { // Check inheritance
+        return null;
+      }
+      throwException("Invalid return inheritance type.");
+    }
+    // Check if return is object
+    if (returnType instanceof TypeNil &&
+      (expectedReturnType instanceof TypeClass || expectedReturnType instanceof TypeArray)) {
+      return null;
+    }
+        // Check if matches
+    if (!returnType.equals(expectedReturnType)) {
+      throwException("Invalid return type.");
+    }
+    
+    return null; // matching primitives
+    }
 }
