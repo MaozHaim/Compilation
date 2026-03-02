@@ -1,31 +1,15 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+public class IrCommandLabel extends IrCommand{
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-import mips.*;
+    public String labelName;
 
-public class IrCommandLabel extends IrCommand
-{
-	String labelName;
-	
-	public IrCommandLabel(String labelName)
-	{
-		this.labelName = labelName;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		MipsGenerator.getInstance().label(labelName);
-	}
+    public IrCommandLabel(String label_name) {
+        this.labelName = label_name;
+    }
+
+    @Override
+    public String toString() {
+        return labelName + ":";
+    }
 }

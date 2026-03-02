@@ -1,31 +1,21 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import temp.*;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-import mips.*;
+/**
+ * Responsible for defining variables: x = t1
+ * Used when defining a fresh variable in L-code: int x = y
+ * Usage in skeleton: VARDEC
+ */
+public class IrCommandAllocate extends IrCommand {
+    public String var_name;
 
-public class IrCommandAllocate extends IrCommand
-{
-	String varName;
-	
-	public IrCommandAllocate(String varName)
-	{
-		this.varName = varName;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		MipsGenerator.getInstance().allocate(varName);
-	}
+    public IrCommandAllocate(String var_name) {
+        this.var_name = var_name;
+    }
+
+    @Override
+    public String toString() {
+        return "allocate(" + var_name + ")";
+    }
 }

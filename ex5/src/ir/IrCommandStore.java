@@ -1,34 +1,18 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import temp.Temp;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-import temp.*;
-import mips.*;
+public class IrCommandStore extends IrCommand{
+    public String varName;
+    public Temp src;
 
-public class IrCommandStore extends IrCommand
-{
-	String varName;
-	Temp src;
-	
-	public IrCommandStore(String varName, Temp src)
-	{
-		this.src      = src;
-		this.varName = varName;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		MipsGenerator.getInstance().store(varName,src);
-	}
+    public IrCommandStore(String var_name, Temp src) {
+        this.src = src;
+        this.varName = var_name;
+    }
+
+    @Override
+    public String toString() {
+        return varName +  " := " + src;
+    }
 }

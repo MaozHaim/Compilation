@@ -1,32 +1,18 @@
-/***********/
-/* PACKAGE */
-/***********/
 package ir;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
+import temp.Temp;
 
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-import temp.*;
-import mips.*;
+public class IrCommandPrintInt extends IrCommand {
+    Temp t;
 
-public class IrCommandPrintInt extends IrCommand
-{
-	Temp t;
-	
-	public IrCommandPrintInt(Temp t)
-	{
-		this.t = t;
-	}
-	
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void mipsMe()
-	{
-		MipsGenerator.getInstance().printInt(t);
-	}
+    public IrCommandPrintInt(Temp t)
+    {
+        super();
+        this.t = t;
+    }
+
+    @Override
+    public String toString() {
+        return "print " + t;
+    }
 }
