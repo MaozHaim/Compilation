@@ -1,5 +1,6 @@
 package ast;
 
+import temp.Temp;
 import types.Type;
 
 import java.util.Arrays;
@@ -32,5 +33,11 @@ public class AstCfieldVar extends AstCfield {
             throwException("Field may only be initialized with a constant value.");
         }
         return varDec.SemantMe();
+    }
+
+
+    @Override
+    public Temp IRme() {
+        return null;
     }
 }

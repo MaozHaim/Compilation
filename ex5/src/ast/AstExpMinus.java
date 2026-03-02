@@ -15,6 +15,8 @@ public class AstExpMinus extends AstExp
 	public AstExp left;
 	public AstExp right;
 	public AstBinop op;
+	public Type type;
+
 	
 	public AstExpMinus(AstExp left, AstExp right, int lineNum)
 	{
@@ -39,6 +41,12 @@ public class AstExpMinus extends AstExp
 
 
 	@Override
+	public String toString() {
+		return "ExpBinop " + op.op + " " + left.toString() + " " + right.toString() + " " + type.toString();
+	}
+
+
+	@Override
 	public Type SemantMe(){
 		Type typeLeft, typeRight;
 
@@ -54,6 +62,7 @@ public class AstExpMinus extends AstExp
 		if (!areIntegers) {
 			throwException("MINUS - Operation defined only for integers.");
 		}
+		this.type = typeLeft;
 		return typeLeft;
 	}
 
@@ -73,7 +82,7 @@ public class AstExpMinus extends AstExp
 
 		IrCommand command = new IrCommandMinus(dst, t1, t2);
 		Ir.getInstance().AddIrCommand(command);
-
+		IrPatterns.clampInteger(dst);
 		return dst;
 	}
 }

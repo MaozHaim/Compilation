@@ -15,6 +15,8 @@ public class AstExpTimes extends AstExp
 	public AstExp left;
 	public AstExp right;
 	public AstBinop op;
+	public Type type;
+
 	
 	public AstExpTimes(AstExp left, AstExp right, int lineNum)
 	{
@@ -39,6 +41,12 @@ public class AstExpTimes extends AstExp
 
 
 	@Override
+	public String toString() {
+		return "ExpBinop " + op.op + " " + left.toString() + " " + right.toString() + " " + type.toString();
+	}
+
+
+	@Override
 	public Type SemantMe(){
 		Type typeLeft, typeRight;
 
@@ -54,6 +62,7 @@ public class AstExpTimes extends AstExp
 		if (!areIntegers) {
 			throwException("TIMES - Operation defined only for integers.");
 		}
+		this.type = typeLeft;
 		return typeLeft;
 	}
 
@@ -73,7 +82,7 @@ public class AstExpTimes extends AstExp
 
 		IrCommand command = new IrCommandTimes(dst, t1, t2);
 		Ir.getInstance().AddIrCommand(command);
-
+		IrPatterns.clampInteger(dst);
 		return dst;
 	}
 }

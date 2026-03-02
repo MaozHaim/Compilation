@@ -15,6 +15,7 @@ public class AstExpDivide extends AstExp
 	public AstExp left;
 	public AstExp right;
 	public AstBinop op;
+	public Type type;
 	
 	public AstExpDivide(AstExp left, AstExp right, int lineNum)
 	{
@@ -35,6 +36,12 @@ public class AstExpDivide extends AstExp
 	@Override
 	protected List<? extends AstNode> GetChildren() {
 		return Arrays.asList(left, op,  right);
+	}
+
+
+	@Override
+	public String toString() {
+		return "ExpBinop " + op.op + " " + left.toString() + " " + right.toString() + " " + type.toString();
 	}
 
 
@@ -61,6 +68,7 @@ public class AstExpDivide extends AstExp
 			}
 		}
 
+		this.type = typeLeft;
 		return typeLeft;
 	}
 
@@ -78,9 +86,7 @@ public class AstExpDivide extends AstExp
 			t2 = right.IRme();
 		}
 
-		IrCommand command = new IrCommandDivide(dst, t1, t2);
-		Ir.getInstance().AddIrCommand(command);
-
+		IrPatterns.divide(dst, t1, t2);
 		return dst;
 	}
 }

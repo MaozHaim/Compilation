@@ -16,6 +16,8 @@ public class AstExpPlus extends AstExp
 	public AstExp left;
 	public AstExp right;
 	public AstBinop op;
+	public Type type;
+
 	
 	public AstExpPlus(AstExp left, AstExp right, int lineNum)
 	{
@@ -40,6 +42,12 @@ public class AstExpPlus extends AstExp
 
 
 	@Override
+	public String toString() {
+		return "ExpBinop " + op.op + " " + left.toString() + " " + right.toString() + " " + type.toString();
+	}
+
+
+	@Override
 	public Type SemantMe(){
 		Type typeLeft, typeRight;
 
@@ -56,6 +64,7 @@ public class AstExpPlus extends AstExp
 		if (!areIntegers && !areStrings) {
 			throwException("PLUS - Operation defined only for integers and strings.");
 		}
+		this.type = typeLeft;
 		return typeLeft;
 	}
 
@@ -73,8 +82,16 @@ public class AstExpPlus extends AstExp
 			t2 = right.IRme();
 		}
 
-		IrCommand command = new IrCommandPlus(dst, t1, t2);
-		Ir.getInstance().AddIrCommand(command);
+		IrCommand command = null;
+		if (type instanceof TypeInt) {
+			command = new IrCommandPlusInt(dst, t1, t2);
+			Ir.getInstance().AddIrCommand(command);
+			IrPatterns.clampInteger(dst);
+		}
+		if (type instanceof TypeString) {
+			command = new IrCommandPlusStr(dst, t1, t2);
+			Ir.getInstance().AddIrCommand(command);
+		}
 
 		return dst;
 	}

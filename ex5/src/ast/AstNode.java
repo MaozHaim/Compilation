@@ -1,6 +1,7 @@
 package ast;
 
 import errors.SemanticException;
+import symboltable.Metadata;
 import symboltable.SymbolTable;
 import types.Type;
 import temp.Temp;
@@ -17,6 +18,8 @@ public abstract class AstNode
 	/*******************************************/
 	public int serialNumber;
 	protected int lineNum; // the start of the line number it was encountered in.
+	public static int vardecCounter;
+	public static int attributeCounter;
 
 
 	public AstNode(String derivation, int lineNum) {
@@ -35,19 +38,29 @@ public abstract class AstNode
 
 	// Abstract functions
 	public abstract Type SemantMe();
+
+
 	protected abstract String GetNodeName();
 
 
 	protected List<? extends AstNode> GetChildren() { return Arrays.asList(); }
 
 
+	protected final void tryTableEnter(String id, Type type) { tryTableEnter(id, type, null); }
+
+
 	/** Attempts to enter a table-entry {id, type} into the symbol_table, use throwException on failure.*/
-	protected final void tryTableEnter(String id, Type type){
+	protected final void tryTableEnter(String id, Type type, Metadata metadata){
 		SymbolTable table = SymbolTable.getInstance();
 		if (table.isInCurrentScope(id)){
 			throwException("Name " + id + " already defined in current scope");
 		}
-		table.enter(id, type);
+		if (metadata == null) {
+			table.enter(id, type);
+		}
+		else {
+			table.enter(id, type, metadata);
+		}
 	}
 
 

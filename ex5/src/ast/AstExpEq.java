@@ -4,11 +4,7 @@ import ir.Ir;
 import ir.IrCommand;
 import ir.IrCommandEq;
 import temp.Temp;
-import types.Type;
-import types.TypeArray;
-import types.TypeClass;
-import types.TypeInt;
-import types.TypeNil;
+import types.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +14,7 @@ public class AstExpEq extends AstExp
 	public AstExp left;
 	public AstExp right;
 	public AstBinop op;
+	public Type type;
 
 
 	public AstExpEq(AstExp left, AstExp right, int lineNum)
@@ -43,7 +40,15 @@ public class AstExpEq extends AstExp
 
 
 	@Override
+	public String toString() {
+		return "ExpBinop " + op.op + " " + left.toString() + " " + right.toString() + " " + type.toString();
+	}
+
+
+	@Override
 	public Type SemantMe() {
+		this.type = TypeInt.getInstance();
+
 		Type typeLeft, typeRight;
 
 		typeLeft = left.SemantMe();
@@ -87,9 +92,15 @@ public class AstExpEq extends AstExp
 			t2 = right.IRme();
 		}
 
-		IrCommand command = new IrCommandEq(dst, t1, t2);
-		Ir.getInstance().AddIrCommand(command);
+		IrCommand command = null;
 
+		if (type instanceof TypeString) {
+			command = new IrCommandEqStr(dst, t1, t2);
+		} else {
+			command = new IrCommandEqInt(dst, t1, t2);
+		}
+
+		Ir.getInstance().AddIrCommand(command);
 		return dst;
 	}
 }

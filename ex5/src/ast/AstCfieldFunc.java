@@ -1,5 +1,6 @@
 package ast;
 
+import temp.Temp;
 import types.Type;
 
 import java.util.Arrays;
@@ -28,4 +29,10 @@ public class AstCfieldFunc extends AstCfield{
 
     @Override
     public Type SemantMe() { return funcDec.SemantMe(); }
+
+
+    @Override
+    public Temp IRme() {
+        return funcDec.IRme();
+    }
 }
