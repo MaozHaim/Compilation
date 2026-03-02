@@ -6,7 +6,7 @@ package symboltable;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import types.*;
+import types.Type;
 
 /**********************/
 /* SYMBOL TABLE ENTRY */
@@ -28,6 +28,11 @@ public class SymbolTableEntry
 	/******************/
 	public Type type;
 
+	/******************/
+	/* Scope number   */
+	/******************/
+	public int scope;
+
 	/*********************************************/
 	/* prevtop and next symbol table entries ... */
 	/*********************************************/
@@ -48,7 +53,8 @@ public class SymbolTableEntry
 		int index,
 		SymbolTableEntry next,
 		SymbolTableEntry prevtop,
-		int prevtopIndex)
+		int prevtopIndex,
+		int scope)
 	{
 		this.index = index;
 		this.name = name;
@@ -56,5 +62,7 @@ public class SymbolTableEntry
 		this.next = next;
 		this.prevtop = prevtop;
 		this.prevtopIndex = prevtopIndex;
+		this.scope = scope;
+
 	}
 }
