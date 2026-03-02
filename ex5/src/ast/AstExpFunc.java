@@ -2,6 +2,7 @@ package ast;
 
 import ir.Ir;
 import ir.IrCommandPrintInt;
+import symboltable.SymbolTable;
 import temp.Temp;
 import types.Type;
 import types.TypeFunction;
@@ -13,7 +14,7 @@ import java.util.List;
 
 
 
-public class AstExpFunc extends AstExp {
+public class AstExpFunc extends AstExpFuncAbstract {
     public String id;
     public List<AstExp> exps;
 
@@ -68,18 +69,26 @@ public class AstExpFunc extends AstExp {
 
     @Override
     public Temp IRme() {
-        Temp t = null;
+        Ir ir = Ir.getInstance();
 
-        if (!exps.isEmpty()) {
-            // grab only the first parameter of the function
-            t = exps.get(0).IRme();
-            for (int i = 1; i < exps.size(); i++){
-                exps.get(i).IRme();
-            }
+        if (id.equals(SymbolTable.PrintInt)){
+            ir.AddIrCommand(new IrCommandPrintInt(exps.get(0).IRme()));
+            return null;
+        }
+        if (id.equals(SymbolTable.PrintString)){
+            ir.AddIrCommand(new IrCommandPrintString(exps.get(0).IRme()));
+            return null;
         }
 
-        Ir.getInstance().AddIrCommand(new IrCommandPrintInt(t));
+        List<Temp> arguments = new ArrayList<>();
+        for (AstExp exp : exps) {
+            arguments.add(exp.IRme());
+        }
 
-        return null;
+        // This means that function statements that ignore the return value still take a temp away
+        Temp dst = new Temp();
+        ir.AddIrCommand(new IrCcommandCallFunc(id, arguments, dst));
+
+        return dst;
     }
 }

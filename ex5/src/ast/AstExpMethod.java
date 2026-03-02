@@ -1,6 +1,8 @@
 package ast;
 
+import ir.Ir;
 import symboltable.SymbolTable;
+import temp.Temp;
 import types.Type;
 import types.TypeClass;
 import types.TypeFunction;
@@ -13,6 +15,7 @@ import java.util.List;
 public class AstExpMethod extends AstExp{
     public AstVar var;
     public String methodName;
+    public TypeClass classData;
     public List<AstExp> exps;
 
     public AstExpMethod(AstVar var, String methodName, int lineNum){
@@ -75,5 +78,24 @@ public class AstExpMethod extends AstExp{
         }
 
         return returnType;
+    }
+
+
+    @Override
+    public Temp IRme() {
+        Ir ir = Ir.getInstance();
+
+        List<Temp> arguments = new ArrayList<>();
+        for (AstExp exp : exps) {
+            arguments.add(exp.IRme());
+        }
+
+        int methodOffset = classData.getMethodIndex(methodName);
+
+        Temp caller = var.IRme();
+        Temp dst = new Temp();
+        ir.AddIrCommand(new IrCommandCallMethod(methodName, methodOffset, caller, arguments, dst));
+
+        return dst;
     }
 }
