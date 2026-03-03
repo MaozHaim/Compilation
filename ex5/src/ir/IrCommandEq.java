@@ -2,7 +2,7 @@ package ir;
 
 import temp.*;
 
-public class IrCommandEq extends IrCommandBinop {
+public abstract class IrCommandEq extends IrCommandBinop {
     public Temp t1;
     public Temp t2;
     public Temp dst;

@@ -1,8 +1,6 @@
 package ast;
 
-import ir.Ir;
-import ir.IrCommand;
-import ir.IrCommandEq;
+import ir.*;
 import temp.Temp;
 import types.*;
 

@@ -1,0 +1,61 @@
+package ir;
+
+import mips.MipsGenerator;
+import temp.Temp;
+
+public class IrCommandEqInt extends IrCommandEq{
+    public IrCommandEqInt(Temp dst, Temp t1, Temp t2) {
+        super(dst, t1, t2);
+    }
+
+
+    @Override
+    public String toString() {
+        return dst + " := " + super.toString() + "\t (Integers)";
+    }
+
+
+    @Override
+    public void MIPSme() {
+        /*******************************/
+        /* [1] Allocate 3 fresh labels */
+        /*******************************/
+        String label_end = getFreshLabel("end");
+        String label_AssignOne = getFreshLabel("AssignOne");
+        String label_AssignZero = getFreshLabel("AssignZero");
+
+        /******************************************/
+        /* [2] if (t1==t2) goto label_AssignOne;  */
+        /*     if (t1!=t2) goto label_AssignZero; */
+        /******************************************/
+        MipsGenerator.getInstance().beq(t1, t2, label_AssignOne);
+        MipsGenerator.getInstance().bne(t1, t2, label_AssignZero);
+
+        /************************/
+        /* [3] label_AssignOne: */
+        /*                      */
+        /*         t3 := 1      */
+        /*         goto end;    */
+        /*                      */
+        /************************/
+        MipsGenerator.getInstance().label(label_AssignOne);
+        MipsGenerator.getInstance().li(dst, 1);
+        MipsGenerator.getInstance().jump(label_end);
+
+        /*************************/
+        /* [4] label_AssignZero: */
+        /*                       */
+        /*         t3 := 1       */
+        /*         goto end;     */
+        /*                       */
+        /*************************/
+        MipsGenerator.getInstance().label(label_AssignZero);
+        MipsGenerator.getInstance().li(dst, 0);
+        MipsGenerator.getInstance().jump(label_end);
+
+        /******************/
+        /* [5] label_end: */
+        /******************/
+        MipsGenerator.getInstance().label(label_end);
+    }
+}
