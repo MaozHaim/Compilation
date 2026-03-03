@@ -1,14 +1,11 @@
 package mips;
 
-/* GENERAL IMPORTS */
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-/* PROJECT IMPORTS */
 import ir.InitialConstVal;
-import temp.*;
+import temp.Temp;
 
 public class MipsGenerator
 {
