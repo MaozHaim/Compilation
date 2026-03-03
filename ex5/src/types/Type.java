@@ -16,4 +16,10 @@ public abstract class Type
 	/* isArray() */
 	/*************/
 	public boolean isArray(){ return false;}
+
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

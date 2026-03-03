@@ -26,6 +26,9 @@ import java.util.List;
 /****************/
 public class SymbolTable
 {
+	public static final String PRINT_INT = "PrintInt";
+	public static final String PRINT_STRING = "PrintString";
+
 	private int hashArraySize = 13;
 	
 	/**********************************************/
@@ -55,12 +58,15 @@ public class SymbolTable
 	private Type expectedReturnType;
 	private int scopeCounter = 0; // for each scope we enter, this increments. for each scope exited, this decrements.
 	public TypeClass currentClass; // for searching for inherited fields inside subclass methods
+	public TypeFunction currentFunction;
 
 
 	/****************************************************************************/
 	/* Enter a variable, function, class type or array type to the symbol table */
 	/****************************************************************************/
-	public void enter(String name, Type t) {
+	public void enter(String name, Type t) { enter(name, t, null); }
+
+	public void enter(String name, Type t, Metadata metadata) {
 		/*************************************************/
 		/* [1] Compute the hash value for this new entry */
 		/*************************************************/
@@ -72,22 +78,28 @@ public class SymbolTable
 		/* will be the next entry of the new entry we are inserting */
 		/******************************************************************************/
 		SymbolTableEntry next = table[hashValue];
-	
+
 		/**************************************************************************/
 		/* [3] Prepare a new symbol table entry with name, type, next and prevtop */
 		/**************************************************************************/
-		SymbolTableEntry newEntry = new SymbolTableEntry(name, t, hashValue, next, top, topIndex++, scopeCounter);
+		SymbolTableEntry newEntry;
+		if (metadata == null) {
+			newEntry = new SymbolTableEntry(name, t, hashValue, next, top, topIndex++, scopeCounter);
+		}
+		else {
+			newEntry = new SymbolTableEntry(name, t, hashValue, next, top, topIndex++, scopeCounter, metadata);
+		}
 
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
 		/**********************************************/
 		top = newEntry;
-		
+
 		/****************************************/
 		/* [5] Enter the new entry to the table */
 		/****************************************/
 		table[hashValue] = newEntry;
-		
+
 		/**************************/
 		/* [6] Print Symbol Table */
 		/**************************/
@@ -156,6 +168,9 @@ public class SymbolTable
 	}
 
 
+	public int getScopeCounter() { return scopeCounter; }
+
+
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
 	/***************************************************************************/
@@ -204,12 +219,17 @@ public class SymbolTable
 	 * Returns the type of attribute, or null on failure.
 	 */
 	public Type findMemberType(TypeClass classType, String memberName) {
+		TypeClassMemberDec member = findMember(classType, memberName);
+		return member != null ? member.t : null;
+	}
+
+	public TypeClassMemberDec findMember(TypeClass classType, String memberName) {
 		TypeClass currentClass = classType;
 
 		while (currentClass != null) {
 			TypeClassMemberDec desiredMember = findMemberInClass(currentClass, memberName);
 			if (desiredMember != null) {
-				return desiredMember.t;
+				return desiredMember;
 			}
 			currentClass = currentClass.father;
 		}
@@ -228,6 +248,20 @@ public class SymbolTable
 				return member;
 			}
 		}
+		return null;
+	}
+
+
+	/** find() for metadata. (Duplicated logic) */
+	public Metadata findMetadata(String name) {
+		SymbolTableEntry found = findEntryInTable(name);
+		boolean inClass = (currentClass != null);
+		boolean isFound = (found != null);
+		if (inClass && (!isFound || found.scope == GLOBALSCOPE)) {
+			TypeClassMemberDec member = findMember(currentClass, name);
+			if (member != null) { return member.metadata; }
+		}
+		if (isFound) return found.metadata;
 		return null;
 	}
 
@@ -360,16 +394,16 @@ public class SymbolTable
 			/* [3] Enter library function PrintInt */
 			/***************************************/
 			instance.enter(
-					"PrintInt",
+					PRINT_INT,
 					new TypeFunction(
 							TypeVoid.getInstance(),
-							"PrintInt",
+							PRINT_INT,
 							Arrays.asList(TypeInt.getInstance())));
 			instance.enter(
-					"PrintString",
+					PRINT_STRING,
 					new TypeFunction(
 							TypeVoid.getInstance(),
-							"PrintString",
+							PRINT_STRING,
 							Arrays.asList(TypeString.getInstance())));
 		}
 		return instance;

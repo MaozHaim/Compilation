@@ -17,7 +17,7 @@ public class SymbolTableEntry
 	/* index */
 	/*********/
 	int index;
-	
+
 	/********/
 	/* name */
 	/********/
@@ -43,7 +43,9 @@ public class SymbolTableEntry
 	/* The prevtopIndex is just for debug purposes ... */
 	/****************************************************/
 	public int prevtopIndex;
-	
+
+	Metadata metadata;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -63,6 +65,26 @@ public class SymbolTableEntry
 		this.prevtop = prevtop;
 		this.prevtopIndex = prevtopIndex;
 		this.scope = scope;
+		this.metadata = new Metadata();
+	}
 
+	public SymbolTableEntry(
+		String name,
+		Type type,
+		int index,
+		SymbolTableEntry next,
+		SymbolTableEntry prevtop,
+		int prevtopIndex,
+		int scope,
+		Metadata metadata)
+	{
+		this.index = index;
+		this.name = name;
+		this.type = type;
+		this.next = next;
+		this.prevtop = prevtop;
+		this.prevtopIndex = prevtopIndex;
+		this.scope = scope;
+		this.metadata = metadata;
 	}
 }
