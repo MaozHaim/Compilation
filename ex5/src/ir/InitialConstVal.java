@@ -9,13 +9,6 @@ public class InitialConstVal {
     private String value = "0";
     private boolean isString = false;
 
-    public String getValue() {
-        return value;
-    }
-
-    public boolean isString() {
-        return isString;
-    }
 
     public InitialConstVal(AstExp exp){
         if (exp == null) return; // empty initialization
@@ -32,5 +25,15 @@ public class InitialConstVal {
             isString = true;
         }
         // else must be nil, default values
+    }
+
+
+    public String getValue() {
+        return value;
+    }
+
+
+    public boolean isString() {
+        return isString;
     }
 }

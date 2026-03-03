@@ -30,22 +30,9 @@ public class Ir {
 		}
 		return instance;
 	}
-}
 
-/**
- * IRcommand <-> IRcommand <-> IRcommand <-> ... <-> IRcommand
- * We have a list of IRcommands
- * Each label is associated with its own IRcommand
- * Each jump is also associated with its own IRcommand
- *
- * Do we really need an index?
- * For each label (string), keep a pointer to its associated IRcommand.
- * Each jump is literally just an IR command.
- *
- *
- * int i = 0;
- * while (i <= size) {
- *     IRcommand = list.get(i)
- *     if (IRcommand instanceof Label)
- * }
- */
+
+	public void MIPSme(){
+		for (IrCommand command : commands) { command.MIPSme(); }
+	}
+}
