@@ -1,5 +1,6 @@
 package ir;
 
+import mips.MipsGenerator;
 import temp.Temp;
 
 import java.util.Set;
@@ -49,10 +50,10 @@ public class IrCommandAddImmediate extends IrCommand {
     @Override
     public void MIPSme() {
         if (op1 != null) {
-            MIPSGenerator.getInstance().addi(dst, op1, immediate);
+            MipsGenerator.getInstance().addi(dst, op1, immediate);
         }
         else {
-            MIPSGenerator.getInstance().addi(dst, dst, immediate);
+            MipsGenerator.getInstance().addi(dst, dst, immediate);
         }
     }
 }

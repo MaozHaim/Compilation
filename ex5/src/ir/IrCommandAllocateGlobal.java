@@ -1,5 +1,6 @@
 package ir;
 
+import mips.MipsGenerator;
 import symboltable.Metadata;
 
 public class IrCommandAllocateGlobal extends IrCommand {
@@ -23,7 +24,7 @@ public class IrCommandAllocateGlobal extends IrCommand {
 
 
     public void MIPSme() {
-        MIPSGenerator.getInstance().allocateGlobal(varName, initVal, isStringVal);
+        MipsGenerator.getInstance().allocateGlobal(varName, initVal, isStringVal);
     }
 
 }
