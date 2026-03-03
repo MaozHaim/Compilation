@@ -1,7 +1,7 @@
 package ir;
 
 import mips.MipsGenerator;
-import temp.*;
+import temp.Temp;
 
 public class IrCommandGt extends IrCommandBinop {
     public Temp t1;
@@ -60,5 +60,6 @@ public class IrCommandGt extends IrCommandBinop {
         /******************/
         /* [5] label_end: */
         /******************/
-        MipsGenerator.getInstance().label(label_end);}
+        MipsGenerator.getInstance().label(label_end);
+    }
 }
