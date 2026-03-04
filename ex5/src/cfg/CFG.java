@@ -100,8 +100,8 @@ public class CFG {
             CFGBlock block = blocks.get(i);
             IrCommand command = block.getBody().get(0); // They're exclusively single commands as of now
             addVarOrTemp(command, varsAndTemps);
-            if (command instanceof IrCommandJumpType) { // FOR PROJECT: handle functions. label "endmain"?
-                IrCommandJumpType jumpCommand = (IrCommandJumpType) command;
+            if (command instanceof IrCommandJump) { // FOR PROJECT: handle functions. label "endmain"?
+                IrCommandJump jumpCommand = (IrCommandJump) command;
                 String jumpToLabel = jumpCommand.label_name;
                 int jumpLabelIndex = labelToIndex.get(jumpToLabel);
                 CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);

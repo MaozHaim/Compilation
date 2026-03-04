@@ -5,7 +5,7 @@ import temp.Temp;
 
 import java.util.Set;
 
-public class IrCommandJumpIfEqZero extends IrCommandJumpType {
+public class IrCommandJumpIfEqZero extends IrCommandJump {
     Temp t;
 
 

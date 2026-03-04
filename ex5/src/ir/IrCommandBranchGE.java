@@ -5,7 +5,7 @@ import temp.Temp;
 
 import java.util.Set;
 
-public class IrCommandBranchGE extends IrCommandJumpType {
+public class IrCommandBranchGE extends IrCommandJump {
     private Temp t1;
     private Temp t2;
     private String label;

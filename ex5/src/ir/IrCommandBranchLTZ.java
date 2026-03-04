@@ -5,7 +5,7 @@ import temp.Temp;
 
 import java.util.Set;
 
-public class IrCommandBranchLTZ extends IrCommandJumpType {
+public class IrCommandBranchLTZ extends IrCommandJump {
     Temp t1;
 
 

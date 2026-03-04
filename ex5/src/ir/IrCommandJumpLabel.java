@@ -2,7 +2,7 @@ package ir;
 
 import mips.MipsGenerator;
 
-public class IrCommandJumpLabel extends IrCommandJumpType {
+public class IrCommandJumpLabel extends IrCommandJump {
     public IrCommandJumpLabel(String label_name) {
         super(label_name);
     }
