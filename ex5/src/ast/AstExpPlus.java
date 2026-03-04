@@ -84,7 +84,7 @@ public class AstExpPlus extends AstExp
 		if (type instanceof TypeInt) {
 			command = new IrCommandPlusInt(dst, t1, t2);
 			Ir.getInstance().AddIrCommand(command);
-			IRPatterns.clampInteger(dst);
+			IrPatterns.clampInteger(dst);
 		}
 		if (type instanceof TypeString) {
 			command = new IrCommandPlusStr(dst, t1, t2);

@@ -13,9 +13,9 @@ public class IrCommandGenerateBuiltinFuncs extends IrCommand {
     public static void generateErrorSections(){
         MipsGenerator mips = MipsGenerator.getInstance();
 
-        mips.errorSection(IRPatterns.INVALID_DEREF_LABEL, "string_invalid_ptr_dref");
-        mips.errorSection(IRPatterns.DIV_BY_ZERO_LABEL, "string_illegal_div_by_0");
-        mips.errorSection(IRPatterns.OUT_OF_BOUNDS_LABEL, "string_access_violation");
+        mips.errorSection(IrPatterns.INVALID_DEREF_LABEL, "string_invalid_ptr_dref");
+        mips.errorSection(IrPatterns.DIV_BY_ZERO_LABEL, "string_illegal_div_by_0");
+        mips.errorSection(IrPatterns.OUT_OF_BOUNDS_LABEL, "string_access_violation");
     }
 
 

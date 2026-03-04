@@ -1,9 +1,6 @@
 package ast;
 
-import ir.IRPatterns;
-import ir.Ir;
-import ir.IrCommand;
-import ir.IrCommandDivide;
+import ir.IrPatterns;
 import temp.Temp;
 import types.Type;
 import types.TypeInt;
@@ -87,7 +84,7 @@ public class AstExpDivide extends AstExp
 			t2 = right.IRme();
 		}
 
-		IRPatterns.divide(dst, t1, t2);
+		IrPatterns.divide(dst, t1, t2);
 		return dst;
 	}
 }

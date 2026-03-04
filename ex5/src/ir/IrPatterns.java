@@ -4,8 +4,8 @@ package ir;
 import temp.Temp;
 
 // Utility class to generate common patterns
-public class IRPatterns {
-    private IRPatterns() {} // static class
+public class IrPatterns {
+    private IrPatterns() {} // static class
     public static int MAX_INT = 32767;
     public static int MIN_INT = -32768;
     public static final String DIV_BY_ZERO_LABEL = "div_by_zero_err";

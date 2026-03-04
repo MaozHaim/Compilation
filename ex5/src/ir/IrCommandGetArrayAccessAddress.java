@@ -45,8 +45,8 @@ public class IrCommandGetArrayAccessAddress extends IrCommandGetAddress{
 
         // check bound restrictions
         mips.loadAt(dst, arrPtr, 0);
-        mips.bltz(offset, IRPatterns.OUT_OF_BOUNDS_LABEL); // check > 0
-        mips.bge(offset, dst, IRPatterns.OUT_OF_BOUNDS_LABEL); // check < size
+        mips.bltz(offset, IrPatterns.OUT_OF_BOUNDS_LABEL); // check > 0
+        mips.bge(offset, dst, IrPatterns.OUT_OF_BOUNDS_LABEL); // check < size
 
         // get address
         mips.addi(dst, offset, 1); // add 1 because of keeping the array size
