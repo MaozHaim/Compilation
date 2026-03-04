@@ -1,7 +1,9 @@
 package ast;
 
 import ir.Ir;
+import ir.IrCommandCallFunc;
 import ir.IrCommandPrintInt;
+import ir.IrCommandPrintString;
 import symboltable.SymbolTable;
 import temp.Temp;
 import types.Type;
@@ -87,7 +89,7 @@ public class AstExpFunc extends AstExpFuncAbstract {
 
         // This means that function statements that ignore the return value still take a temp away
         Temp dst = new Temp();
-        ir.AddIrCommand(new IrCcommandCallFunc(id, arguments, dst));
+        ir.AddIrCommand(new IrCommandCallFunc(id, arguments, dst));
 
         return dst;
     }
