@@ -1,5 +1,6 @@
 package ast;
 
+import ir.IRPatterns;
 import ir.Ir;
 import ir.IrCommand;
 import ir.IrCommandTimes;
@@ -82,7 +83,7 @@ public class AstExpTimes extends AstExp
 
 		IrCommand command = new IrCommandTimes(dst, t1, t2);
 		Ir.getInstance().AddIrCommand(command);
-		IrPatterns.clampInteger(dst);
+		IRPatterns.clampInteger(dst);
 		return dst;
 	}
 }

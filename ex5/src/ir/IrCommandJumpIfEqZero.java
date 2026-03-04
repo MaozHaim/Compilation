@@ -14,10 +14,15 @@ public class IrCommandJumpIfEqZero extends IrCommandJump {
         this.t = t;
     }
 
+    public IrCommandJumpIfEqZero(Temp t, String labelName, boolean ignoreCFG) {
+        super(labelName, ignoreCFG);
+        this.t = t;
+    }
+
 
     @Override
     public String toString() {
-        return "jmp " + label_name + " if " + t + " is zero";
+        return "jmp " + this.labelName + " if " + t + " is zero";
     }
 
 
@@ -36,6 +41,6 @@ public class IrCommandJumpIfEqZero extends IrCommandJump {
 
     @Override
     public void MIPSme() {
-        MipsGenerator.getInstance().beqz(t,label_name);
+        MipsGenerator.getInstance().beqz(t,this.labelName);
     }
 }
