@@ -2,6 +2,9 @@ package ir;
 
 import symboltable.Metadata;
 
+/**
+ * Only for logging
+ */
 public class IrCommandParameter extends IrCommand {
     String var_name;
     int offset;
