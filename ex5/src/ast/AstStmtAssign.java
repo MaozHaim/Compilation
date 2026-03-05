@@ -12,16 +12,14 @@ import ir.IrCommandStore;
 import java.util.Arrays;
 import java.util.List;
 
-public class AstStmtAssign extends AstStmt
-{
+public class AstStmtAssign extends AstStmt {
 	/***************/
-	/*  var := exp */
+	/* var := exp */
 	/***************/
 	public AstVar var;
 	public AstExp exp;
 
-	public AstStmtAssign(AstVar var, AstExp exp, int lineNum)
-	{
+	public AstStmtAssign(AstVar var, AstExp exp, int lineNum) {
 		super("stmt -> var ASSIGN exp SEMICOLON", lineNum); // var := exp;
 		this.var = var;
 		this.exp = exp;
@@ -41,15 +39,16 @@ public class AstStmtAssign extends AstStmt
 		Type leftTypeData = var.SemantMe();
 		Type rightTypeData = exp.SemantMe();
 
-		if (leftTypeData.equals(rightTypeData)) return null;
+		if (leftTypeData.equals(rightTypeData))
+			return null;
 
 		if (leftTypeData.isArray()) {
-			arraySemantCheck((TypeArray)leftTypeData, rightTypeData, exp.isNewExp());
+			arraySemantCheck((TypeArray) leftTypeData, rightTypeData, exp.isNewExp());
 			return null;
 		}
 
 		if (leftTypeData instanceof TypeClass) {
-			classSemantCheck((TypeClass)leftTypeData, rightTypeData);
+			classSemantCheck((TypeClass) leftTypeData, rightTypeData);
 			return null;
 		}
 
@@ -57,26 +56,28 @@ public class AstStmtAssign extends AstStmt
 		return null; // can't reach this point
 	}
 
-	private void arraySemantCheck(TypeArray leftArr, Type rightType, boolean isNewExp){
+	private void arraySemantCheck(TypeArray leftArr, Type rightType, boolean isNewExp) {
 		if (!(rightType.isArray())) {
-			if(!(rightType instanceof TypeNil)) // nil is valid to array
+			if (!(rightType instanceof TypeNil)) // nil is valid to array
 				throwException("expression must be of array type");
-			else return;
+			else
+				return;
 		}
 
-		TypeArray rightArr = (TypeArray)rightType;
-		// the reason for || !isNewExp is that otherwise the array types must be strictly the same, and that was already tested for
+		TypeArray rightArr = (TypeArray) rightType;
+		// the reason for || !isNewExp is that otherwise the array types must be
+		// strictly the same, and that was already tested for
 		if (!leftArr.typeOfElements.equals(rightArr.typeOfElements) || !isNewExp)
 			throwException("Assignment of differing array types");
 
 	}
 
-	private void classSemantCheck(TypeClass leftClass, Type rightType){
+	private void classSemantCheck(TypeClass leftClass, Type rightType) {
 		if (!(rightType instanceof TypeClass)) {
-			if(!(rightType instanceof TypeNil)) {// nil is valid to class
+			if (!(rightType instanceof TypeNil)) {// nil is valid to class
 				throwException("expression must be of class type");
-			}
-			else return;
+			} else
+				return;
 		}
 
 		TypeClass rightClass = (TypeClass) rightType;
@@ -85,18 +86,16 @@ public class AstStmtAssign extends AstStmt
 			throwException("Expression does not inherit from variable's class");
 		}
 	}
-	
-	@Override
+
 	public Temp IRme() {
+		Ir ir = Ir.getInstance();
+
+		Temp dst = var.IRme();
 		Temp src = exp.IRme();
 
-		if (var instanceof AstVarSimple){
-			AstVarSimple simplevar = (AstVarSimple) var;
-			Ir.getInstance().AddIrCommand( new IrCommandStore(simplevar.name, src));
-		}
+		ir.add(new IrCommandStore(src, dst, 0));
 
-
-		return null;
+		return dst;
 	}
 
 }

@@ -4,13 +4,18 @@ import types.Type;
 import types.TypeArray;
 import types.TypeInt;
 import types.TypeVoid;
+import types.TypeClass;
 
 import java.util.Arrays;
 import java.util.List;
 
+import ir.Ir;
+import temp.Temp;
+
 public class AstNewexp extends AstExp {
   public AstType type;
   public AstExp exp;
+  public TypeClass classInfo;
 
   public AstNewexp(AstType type, int lineNum) {
     super("NewExp -> NEW type", lineNum); // new type
@@ -62,5 +67,20 @@ public class AstNewexp extends AstExp {
   @Override
   public boolean isNewExp() {
     return true;
+  }
+
+  public Temp IRme() {
+    Temp dst = new Temp();
+
+    if (exp == null) { // Class object
+      Ir.getInstance().AddIrCommand(new IrCommandNewObject(dst, classInfo.name, classInfo.getInitialValues()));
+      System.out.println("Created a class object of type: " + classInfo.name);
+    } else { // Array object
+      Temp tempStoresSize = exp.IRme();
+      Ir.getInstance().AddIrCommand(new IrCommandNewArray(dst, tempStoresSize, type.getName()));
+      System.out.println("Created an array object of type: " + type.getName());
+    }
+
+    return dst;
   }
 }
