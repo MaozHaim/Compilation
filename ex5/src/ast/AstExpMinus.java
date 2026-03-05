@@ -1,5 +1,6 @@
 package ast;
 
+import ir.IrPatterns;
 import ir.Ir;
 import ir.IrCommand;
 import ir.IrCommandMinus;

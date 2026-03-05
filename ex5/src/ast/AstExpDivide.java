@@ -1,8 +1,6 @@
 package ast;
 
-import ir.Ir;
-import ir.IrCommand;
-import ir.IrCommandDivide;
+import ir.IrPatterns;
 import temp.Temp;
 import types.Type;
 import types.TypeInt;

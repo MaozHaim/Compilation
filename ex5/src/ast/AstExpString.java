@@ -1,6 +1,7 @@
 package ast;
 
 import ir.Ir;
+import ir.IrCommandGetConstStrAddress;
 import temp.Temp;
 import types.Type;
 import types.TypeString;

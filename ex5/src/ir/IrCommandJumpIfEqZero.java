@@ -1,18 +1,46 @@
 package ir;
 
+import mips.MipsGenerator;
 import temp.Temp;
 
-public class IrCommandJumpIfEqZero extends IrCommandJumpType {
+import java.util.Set;
 
+public class IrCommandJumpIfEqZero extends IrCommandJump {
     Temp t;
+
 
     public IrCommandJumpIfEqZero(Temp t, String label_name) {
         super(label_name);
         this.t = t;
     }
 
+    public IrCommandJumpIfEqZero(Temp t, String labelName, boolean ignoreCFG) {
+        super(labelName, ignoreCFG);
+        this.t = t;
+    }
+
+
     @Override
     public String toString() {
-        return "jmp " + label_name + " if " + t + " is zero";
+        return "jmp " + this.labelName + " if " + t + " is zero";
+    }
+
+
+    @Override
+    public void calcOut(Set<Integer> inSet) {
+        // here we only need to add t to the updated out set
+        inSet.add(t.getSerialNumber());
+    }
+
+
+    @Override
+    public void addTemps(Set<Temp> temps) {
+        temps.add(t);
+    }
+
+
+    @Override
+    public void MIPSme() {
+        MipsGenerator.getInstance().beqz(t,this.labelName);
     }
 }

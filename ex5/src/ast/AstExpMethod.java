@@ -1,6 +1,7 @@
 package ast;
 
 import ir.Ir;
+import ir.IrCommandCallMethod;
 import symboltable.SymbolTable;
 import temp.Temp;
 import types.Type;
