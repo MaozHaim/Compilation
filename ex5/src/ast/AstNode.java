@@ -9,18 +9,16 @@ import temp.Temp;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AstNode
-{
+public abstract class AstNode {
 	/*******************************************/
 	/* The serial number is for debug purposes */
-	/* In particular, it can help in creating  */
-	/* a graphviz dot format of the AST ...    */
+	/* In particular, it can help in creating */
+	/* a graphviz dot format of the AST ... */
 	/*******************************************/
 	public int serialNumber;
 	protected int lineNum; // the start of the line number it was encountered in.
 	public static int vardecCounter;
 	public static int attributeCounter;
-
 
 	public AstNode(String derivation, int lineNum) {
 		/******************************/
@@ -39,33 +37,35 @@ public abstract class AstNode
 	// Abstract functions
 	public abstract Type SemantMe();
 
-
 	protected abstract String GetNodeName();
 
+	protected List<? extends AstNode> GetChildren() {
+		return Arrays.asList();
+	}
 
-	protected List<? extends AstNode> GetChildren() { return Arrays.asList(); }
+	protected final void tryTableEnter(String id, Type type) {
+		tryTableEnter(id, type, null);
+	}
 
-
-	protected final void tryTableEnter(String id, Type type) { tryTableEnter(id, type, null); }
-
-
-	/** Attempts to enter a table-entry {id, type} into the symbol_table, use throwException on failure.*/
-	protected final void tryTableEnter(String id, Type type, Metadata metadata){
+	/**
+	 * Attempts to enter a table-entry {id, type} into the symbol_table, use
+	 * throwException on failure.
+	 */
+	protected final void tryTableEnter(String id, Type type, Metadata metadata) {
 		SymbolTable table = SymbolTable.getInstance();
-		if (table.isInCurrentScope(id)){
+		if (table.isInCurrentScope(id)) {
 			throwException("Name " + id + " already defined in current scope");
 		}
 		if (metadata == null) {
 			table.enter(id, type);
-		}
-		else {
+		} else {
 			table.enter(id, type, metadata);
 		}
 	}
 
-
 	/**
-	 * find() method from SymbolTable, which automatically throws an error if the object wasn't found.
+	 * find() method from SymbolTable, which automatically throws an error if the
+	 * object wasn't found.
 	 * return The Type-class of the object if found.
 	 */
 	protected Type tryTableFind(String ID) {
@@ -77,21 +77,31 @@ public abstract class AstNode
 		return type;
 	}
 
+	/** Returns the variables metadata (as opposed to its TYPE) */
+	protected Metadata tryTableFindMetadata(String id) {
+		SymbolTable symbolTable = SymbolTable.getInstance();
+		Metadata metadata = symbolTable.findMetadata(id);
+		if (metadata == null) {
+			throwException("Name " + id + " not found");
+		}
+		return metadata;
+	}
 
 	/**
-	 * Throw SemanticException and set the global failure line in SymbolTable to the line of the current command.
+	 * Throw SemanticException and set the global failure line in SymbolTable to the
+	 * line of the current command.
 	 */
-	protected final void throwException(String info){
+	protected final void throwException(String info) {
 		throw new SemanticException(info, lineNum + 1); // +1 since cup's line counter starts on 0
 	}
 
-	public final void printMe(){
+	public final void printMe() {
 		// print me, add me as a node, do the same to my children, log the edges to them
 		System.out.println("next node: \n***\n" + GetNodeName() + "\n***");
 
-		AstGraphviz.getInstance().logNode( serialNumber, GetNodeName());
+		AstGraphviz.getInstance().logNode(serialNumber, GetNodeName());
 
-		for (AstNode child : GetChildren()){
+		for (AstNode child : GetChildren()) {
 			child.printMe();
 			AstGraphviz.getInstance().logEdge(serialNumber, child.serialNumber);
 		}
