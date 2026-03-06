@@ -163,8 +163,8 @@ public class AstVardec extends AstDec {
     if (metadata.getRole() == Metadata.VAR_ROLE.LOCAL && exp != null) {
       Temp tempExp = exp.IRme();
       Temp dst = new Temp();
-      ir.add(new IrCommandGetLocalAddress(dst, id, metadata.getOffset()));
-      ir.add(new IrCommandStore(tempExp, dst, 0));
+      ir.AddIrCommand(new IrCommandGetLocalAddress(dst, id, metadata.getOffset()));
+      ir.AddIrCommand(new IrCommandStore(tempExp, dst, 0));
     }
     return null;
   }

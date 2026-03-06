@@ -48,16 +48,16 @@ public class AstVarSimple extends AstVar {
 		Temp dst = new Temp();
 
 		if (this.metadata == null) {
-			Ir.getInstance().add(new IrCommandPlaceholder("No metadata for: " + this.name));
+			Ir.getInstance().AddIrCommand(new IrCommandPlaceholder("No metadata for: " + this.name));
 		} else if (this.metadata.getRole() == Metadata.VAR_ROLE.ATTRIBUTE) {
 			Ir.getInstance()
-					.add(new IrCommandGetAttributeAddress(dst, name, metadata.getOffset(), metadata.getClassName()));
+					.AddIrCommand(new IrCommandGetAttributeAddress(dst, name, metadata.getOffset(), metadata.getClassName()));
 		} else if (this.metadata.getRole() == Metadata.VAR_ROLE.LOCAL) {
-			Ir.getInstance().add(new IrCommandGetLocalAddress(dst, name, metadata.getOffset()));
+			Ir.getInstance().AddIrCommand(new IrCommandGetLocalAddress(dst, name, metadata.getOffset()));
 		} else if (this.metadata.getRole() == Metadata.VAR_ROLE.GLOBAL) {
-			Ir.getInstance().add(new IrCommandGetGlobalAddress(dst, name));
+			Ir.getInstance().AddIrCommand(new IrCommandGetGlobalAddress(dst, name));
 		} else if (this.metadata.getRole() == Metadata.VAR_ROLE.PARAMETER) {
-			Ir.getInstance().add(new IrCommandGetParameterAddress(dst, name, metadata.getOffset()));
+			Ir.getInstance().AddIrCommand(new IrCommandGetParameterAddress(dst, name, metadata.getOffset()));
 		} else {
 			throwException("Failed to find metadata.");
 		}
