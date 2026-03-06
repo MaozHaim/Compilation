@@ -66,12 +66,12 @@ public class AstProgram extends AstNode {
     @Override
     public Temp IRme() {
         Ir ir = Ir.getInstance();
-        ir.add(new IrCommandBeginData());
-        ir.add(new IrCommandGenerateStringConsts(stringConstants));
+        ir.AddIrCommand(new IrCommandBeginData());
+        ir.AddIrCommand(new IrCommandGenerateStringConsts(stringConstants));
         generateGlobals();
         generateVtables();
-        ir.add(new IrCommandBeginText());
-        ir.add(new IrCommandGenerateBuiltinFuncs());
+        ir.AddIrCommand(new IrCommandBeginText());
+        ir.AddIrCommand(new IrCommandGenerateBuiltinFuncs());
 
         for (AstDec dec : this.declarations) {
             if (dec instanceof AstVardec) {
@@ -88,7 +88,7 @@ public class AstProgram extends AstNode {
 
     private void generateGlobals() {
         for (Pair<String, InitialConstVal> name_init : globals) {
-            Ir.getInstance().add(
+            Ir.getInstance().AddIrCommand(
                     new IrCommandAllocateGlobal(
                             name_init.first,
                             name_init.second.getValue(),
@@ -101,9 +101,9 @@ public class AstProgram extends AstNode {
 
         for (AstClassDec clsDec : classes) {
             List<Pair<TypeClass, TypeFunction>> methods = clsDec.typeObject.methodsInfo;
-            ir.add(new IrCommandLabel("vtable_" + clsDec.id));
+            ir.AddIrCommand(new IrCommandLabel("vtable_" + clsDec.id));
             for (Pair<TypeClass, TypeFunction> cls_method : methods) {
-                ir.add(new IrCommandWord(cls_method.first.name + "_" + cls_method.second.name));
+                ir.AddIrCommand(new IrCommandWord(cls_method.first.name + "_" + cls_method.second.name));
             }
         }
     }

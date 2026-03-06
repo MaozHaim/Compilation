@@ -78,10 +78,10 @@ public class AstStmtReturn extends AstStmt {
   @Override
   public Temp IRme() {
     if (exp == null)
-      Ir.getInstance().add(new IrCommandReturn(isMain));
+      Ir.getInstance().AddIrCommand(new IrCommandReturn(isMain));
     else {
       Temp t = exp.IRme();
-      Ir.getInstance().add(new IrCommandReturn(t));
+      Ir.getInstance().AddIrCommand(new IrCommandReturn(t));
     }
     return null;
   }

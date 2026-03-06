@@ -158,7 +158,7 @@ public class CFG {
             addVarOrTemp(command, varsAndTemps);
             if (command instanceof IrCommandJump) { // FOR PROJECT: handle functions. label "endmain"?
                 IrCommandJump jumpCommand = (IrCommandJump) command;
-                String jumpToLabel = jumpCommand.label_name;
+                String jumpToLabel = jumpCommand.labelName;
                 int jumpLabelIndex = labelToIndex.get(jumpToLabel);
                 CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);
                 block.addChild(jumpToBlock);
@@ -419,9 +419,9 @@ public class CFG {
                 demi.addParent(block);
                 continue;
             }
-            if (command instanceof IrCommandJumpType && !((IrCommandJumpType) command).ignoreCFG) {
-                IrCommandJumpType jumpCommand = (IrCommandJumpType) command;
-                String jumpToLabel = jumpCommand.label_name;
+            if (command instanceof IrCommandJump && !((IrCommandJump) command).ignoreCFG) {
+                IrCommandJump jumpCommand = (IrCommandJump) command;
+                String jumpToLabel = jumpCommand.labelName;
                 int jumpLabelIndex = labelToIndex.get(jumpToLabel);
                 CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);
                 block.addChild(jumpToBlock);
