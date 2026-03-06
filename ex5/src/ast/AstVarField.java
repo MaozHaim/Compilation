@@ -1,11 +1,11 @@
 package ast;
 
+import ir.IrCommandLoad;
 import symboltable.SymbolTable;
 import types.Type;
 import types.TypeClass;
 import temp.Temp;
 import ir.Ir;
-import ir.IrCommandLoadWithOffset;
 import ir.IrCommandAddImmediate;
 import ir.IrPatterns;
 
@@ -62,9 +62,9 @@ public class AstVarField extends AstVar {
 
 		Ir ir = Ir.getInstance();
 
-		ir.add(new IrCommandLoadWithOffset(dst, address, 0)); // get address saved in address
+		ir.AddIrCommand(new IrCommandLoad(dst, address, 0)); // get address saved in address
 		IrPatterns.checkNullRef(dst);
-		ir.add(new IrCommandAddImmediate(dst, offset * 4)); // *4 cuz word bird bird bird bird is the word
+		ir.AddIrCommand(new IrCommandAddImmediate(dst, offset * 4)); // *4 cuz word bird bird bird bird is the word
 
 		return dst;
 	}

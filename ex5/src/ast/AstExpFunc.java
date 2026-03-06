@@ -73,11 +73,11 @@ public class AstExpFunc extends AstExpFuncAbstract {
     public Temp IRme() {
         Ir ir = Ir.getInstance();
 
-        if (id.equals(SymbolTable.PrintInt)){
+        if (id.equals(SymbolTable.PRINT_INT)){
             ir.AddIrCommand(new IrCommandPrintInt(exps.get(0).IRme()));
             return null;
         }
-        if (id.equals(SymbolTable.PrintString)){
+        if (id.equals(SymbolTable.PRINT_STRING)){
             ir.AddIrCommand(new IrCommandPrintString(exps.get(0).IRme()));
             return null;
         }

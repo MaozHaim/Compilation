@@ -61,7 +61,7 @@ public class AstFuncParam extends AstNode {
     }
 
     public Temp IRme() {
-        Ir.getInstance().add(new IrCommandParameter(id, metadata.getOffset()));
+        Ir.getInstance().AddIrCommand(new IrCommandParameter(id, metadata.getOffset()));
         return null;
     }
 }

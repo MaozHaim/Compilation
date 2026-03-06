@@ -93,7 +93,7 @@ public class AstStmtAssign extends AstStmt {
 		Temp dst = var.IRme();
 		Temp src = exp.IRme();
 
-		ir.add(new IrCommandStore(src, dst, 0));
+		ir.AddIrCommand(new IrCommandStore(src, dst, 0));
 
 		return dst;
 	}

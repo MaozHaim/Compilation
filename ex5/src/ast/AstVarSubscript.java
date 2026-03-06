@@ -1,17 +1,10 @@
 package ast;
 
+import ir.*;
 import types.Type;
 import types.TypeArray;
 import types.TypeInt;
 import types.TypeClass;
-import ir.Ir;
-import ir.IrCommandLoadWithOffset;
-import ir.IrCommandBranchLTZ;
-import ir.IrCommandBranchGE;
-import ir.IrCommandAddImmediate;
-import ir.IrCommandSLL;
-import ir.IrCommandBinopAddIntegers;
-import ir.IrPatterns;
 
 import temp.Temp;
 
@@ -79,14 +72,14 @@ public class AstVarSubscript extends AstVar {
 		Temp shiftedOffset = new Temp();
 		Temp dst = new Temp();
 
-		ir.add(new IrCommandLoadWithOffset(array, ptrToArray, 0)); // get address saved in address
-		ir.add(new IrCommandLoadWithOffset(size, array, 0)); // get size of array
-		ir.add(new IrCommandBranchLTZ(index, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index < 0
-		ir.add(new IrCommandBranchGE(index, size, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index >= size
+		ir.AddIrCommand(new IrCommandLoad(array, ptrToArray, 0)); // get address saved in address
+		ir.AddIrCommand(new IrCommandLoad(size, array, 0)); // get size of array
+		ir.AddIrCommand(new IrCommandBranchLTZ(index, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index < 0
+		ir.AddIrCommand(new IrCommandBranchGE(index, size, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index >= size
 
-		ir.add(new IrCommandAddImmediate(indexPlus1, index, 1)); // index + 1
-		ir.add(new IrCommandSLL(shiftedOffset, indexPlus1, 2)); // multiply by 4
-		ir.add(new IrCommandBinopAddIntegers(dst, shiftedOffset, array)); // array[shiftedOffset]
+		ir.AddIrCommand(new IrCommandAddImmediate(indexPlus1, index, 1)); // index + 1
+		ir.AddIrCommand(new IrCommandSLL(shiftedOffset, indexPlus1, 2)); // multiply by 4
+		ir.AddIrCommand(new IrCommandPlusInt(dst, shiftedOffset, array)); // array[shiftedOffset]
 
 		return dst;
 	}

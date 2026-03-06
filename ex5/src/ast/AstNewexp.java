@@ -1,5 +1,7 @@
 package ast;
 
+import ir.IrCommandNewArray;
+import ir.IrCommandNewObject;
 import types.Type;
 import types.TypeArray;
 import types.TypeInt;
