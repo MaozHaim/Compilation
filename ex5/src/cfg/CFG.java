@@ -9,12 +9,7 @@ public class CFG {
     public static final String TEMP_CHAR = "t";
     private static final int K = 10; // Number of colors
 
-    // Uninitialized variable analysis (ex4)
-    List<CFGBlock> blocks;
-    private final Set<String> varsAndTemps;
-    public Set<String> uninitializedVars;
-
-    // Liveness analysis + register allocation (ex5)
+    // Liveness analysis + register allocation
     List<List<CFGBlock>> graph; // holds all sub-graphs
     // First Integer - the temp serial number, second - the color (val between 0-9)
     private HashMap<Integer, Integer> tempToVal = new HashMap<>(); // for the coloring
@@ -22,34 +17,8 @@ public class CFG {
 
 
     public CFG(List<IrCommand> commands) {
-        /* ----- Uninitialized Variable Analysis (ex4) ----- */
-        /* You can change the implementation to have a method that constructs varsAndTemps independently,
-           it will be an additional traverse over the IR-commands but will look nicer, so do what you prefer */
-        this.varsAndTemps = new HashSet<>();
-        this.blocks = constructFlatGraph(commands); // This will also add all vars and temps to varsAndTemps
 
-        chaoticIterations();
-
-        for (CFGBlock block: blocks){
-            IrCommand command = block.getBody().get(0);
-            HashMap<String, Variable> out = block.getOut();
-
-            System.out.println("Command " + command);
-            System.out.print("Parents:");
-            for (CFGBlock parent: block.getParents()){
-                IrCommand parentCommand = parent.getBody().get(0);
-                System.out.print(parentCommand + ", ");
-            }
-            System.out.println();
-            out.forEach((key, var) -> {
-                System.out.printf("(%s, %s, %s),\n", var.name, var.state == State.INITIALIZED, var.lineNum);
-            });
-            System.out.println("\n");
-        }
-        // After that, traverse over the graph and print the uninitialized and used variables
-        findUninitializedVars();
-
-        /* ----- Liveness Analysis + Register Allocation (ex5) ----- */
+        /* ----- Liveness Analysis + Register Allocation ----- */
         System.out.println("DEBUG: Starting CFG construction");
         this.graph = constructGraph(commands);
 
@@ -96,110 +65,7 @@ public class CFG {
     }
 
 
-    // ==================== Ex4: Uninitialized Variable Analysis ====================
-
-    private void findUninitializedVars(){
-        uninitializedVars = new HashSet<>();
-
-        for (CFGBlock block: blocks){
-            IrCommand command = block.getBody().get(0);
-            if (command instanceof IrCommandLoad){
-                IrCommandLoad load = (IrCommandLoad) command;
-                Variable loaded = block.getOut().get(load.varName);
-                if (loaded.state == State.UNINITIALIZED){
-                    uninitializedVars.add(loaded.name);
-                }
-            }
-        }
-    }
-
-    private void chaoticIterations() {
-        // now that we have a set of names of variables, we can create a hashmap of them
-        HashMap<String, Variable> initMap = new HashMap<>();
-        for (String name: varsAndTemps){
-            initMap.put(name, new Variable(name, State.UNINITIALIZED, Integer.MAX_VALUE));
-        }
-        // create a "demi-block" at the start to serve as a parent to the real first block
-        // no need to actually add it to the list, gets reference removed after the function
-        CFGBlock demi = new CFGBlock();
-        demi.addChild(blocks.get(0));
-        blocks.get(0).addParent(demi);
-
-        // make sure all blocks have the same initial variable list, including demi-block of course
-        // technically could set the out only for the demi-block instead, but this makes implementation a bit simpler later
-        demi.setInitialOut(initMap);
-        for (CFGBlock block : blocks){
-            block.setInitialOut(initMap);
-        }
-
-        List<CFGBlock> workList = new ArrayList<>(blocks);
-
-        while (!workList.isEmpty()) {
-            CFGBlock block = workList.remove(0);
-
-            boolean outChanged = block.updateOut(varsAndTemps);
-            if (outChanged) workList.addAll(block.getChildren());
-        }
-
-        // remove demi-block shenanigans
-        blocks.get(0).resetParents();
-    }
-
-
-    /** Builds a flat graph for uninitialized variable analysis. */
-    private List<CFGBlock> constructFlatGraph(List<IrCommand> commands) {
-        System.out.println("Creating graph with " + commands.size() + " commands");
-        List<CFGBlock> blocks = getNodes(commands);
-        Map<String, Integer> labelToIndex = findLabels(commands);
-
-        for (int i = 0; i < blocks.size(); i++) {
-            CFGBlock block = blocks.get(i);
-            IrCommand command = block.getBody().get(0); // They're exclusively single commands as of now
-            addVarOrTemp(command, varsAndTemps);
-            if (command instanceof IrCommandJump) { // FOR PROJECT: handle functions. label "endmain"?
-                IrCommandJump jumpCommand = (IrCommandJump) command;
-                String jumpToLabel = jumpCommand.label_name;
-                int jumpLabelIndex = labelToIndex.get(jumpToLabel);
-                CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);
-                block.addChild(jumpToBlock);
-                jumpToBlock.addParent(block);
-            }
-            if (!(command instanceof IrCommandJumpLabel || // not while loop, backward edge
-                    i == blocks.size() - 1)) { // Last node
-                block.addChild(blocks.get(i+1));
-                blocks.get(i+1).addParent(block);
-            }
-        }
-        return blocks;
-    }
-
-    private void addVarOrTemp(IrCommand command, Set<String> nameSet) {
-    if (command instanceof IrCommandStore) {
-        IrCommandStore store = (IrCommandStore) command;
-        nameSet.add(store.varName);
-        nameSet.add(TEMP_CHAR + store.src.getSerialNumber());
-    }
-    else if (command instanceof IrCommandLoad) {
-        IrCommandLoad load = (IrCommandLoad) command;
-        nameSet.add(TEMP_CHAR + load.dst.getSerialNumber());
-        nameSet.add(load.varName);
-    }
-    else if (command instanceof IrCommandBinop) {
-        IrCommandBinop binop = (IrCommandBinop) command;
-        nameSet.add(TEMP_CHAR + binop.dst.getSerialNumber());
-        nameSet.add(TEMP_CHAR + binop.t1.getSerialNumber());
-        nameSet.add(TEMP_CHAR + binop.t2.getSerialNumber());
-    }
-    else if (command instanceof IrCommandAllocate) {
-        nameSet.add(((IrCommandAllocate) command).var_name);
-    }
-    else if (command instanceof IrCommandConstInt) {
-        nameSet.add(TEMP_CHAR + ((IrCommandConstInt) command).t.getSerialNumber());
-    }
-}
-
-
-    // ==================== Ex5: Liveness Analysis + Register Allocation ====================
+    // ==================== Liveness Analysis + Register Allocation ====================
 
     private HashMap<Integer, Set<Integer>> constructInterGraph(List<CFGBlock> subGraph) {
         HashMap<Integer, Set<Integer>> interGraph = new HashMap<>();
@@ -212,7 +78,7 @@ public class CFG {
 
             // It's a real command
             IrCommand command = block.getBody().get(0);
-            Set<Integer> outSet = block.getLiveOut();
+            Set<Integer> outSet = block.getOut();
 
             for (int temp : outSet) {
                 // For any command, we need to add the temps of its out set to the regular edges map
@@ -346,7 +212,7 @@ public class CFG {
         while (!workList.isEmpty()) {
             CFGBlock block = workList.remove(0);
 
-            boolean outChanged = block.updateLiveOut(); // Update the out set of the block and check if it changed
+            boolean outChanged = block.updateOut(); // Update the out set of the block and check if it changed
             // If the out set changed, we need to add all parents of the block to the worklist (backward analysis!)
             if (outChanged) {
                 workList.addAll(block.getParents());
@@ -419,9 +285,9 @@ public class CFG {
                 demi.addParent(block);
                 continue;
             }
-            if (command instanceof IrCommandJumpType && !((IrCommandJumpType) command).ignoreCFG) {
-                IrCommandJumpType jumpCommand = (IrCommandJumpType) command;
-                String jumpToLabel = jumpCommand.label_name;
+            if (command instanceof IrCommandJump && !((IrCommandJump) command).ignoreCFG) {
+                IrCommandJump jumpCommand = (IrCommandJump) command;
+                String jumpToLabel = jumpCommand.labelName;
                 int jumpLabelIndex = labelToIndex.get(jumpToLabel);
                 CFGBlock jumpToBlock = blocks.get(jumpLabelIndex);
                 block.addChild(jumpToBlock);
