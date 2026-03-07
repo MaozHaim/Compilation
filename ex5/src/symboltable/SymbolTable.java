@@ -215,16 +215,6 @@ public class SymbolTable
 	}
 
 
-	public void enterFunction(TypeFunction func) {
-		this.currentFunction = func;
-	}
-
-
-	public void exitFunction() {
-		this.currentFunction = null;
-	}
-
-
 	/**
 	 * Returns the type of attribute, or null on failure.
 	 */
