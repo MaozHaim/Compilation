@@ -24,7 +24,7 @@ parser code
 		System.out.print(lexer.getTokenStartPosition());
 		System.out.print("] ");
 
-		Main.writeStatusToFile(error_location, "ERROR", Main.outputFileName);
+		// Main.writeStatusToFile(error_location, "ERROR", Main.outputFileName);
 		System.out.println("Exiting due to SYNTAX error");
 		System.exit(0);
 	}
