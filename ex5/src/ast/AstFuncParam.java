@@ -43,7 +43,7 @@ public class AstFuncParam extends AstNode {
             throwException("Cannot use void type for function parameters.");
         }
         constructMetadata(offset);
-        tryTableEnter(id, paramType);
+        tryTableEnter(id, paramType, this.metadata);
         return paramType;
     }
 
