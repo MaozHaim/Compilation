@@ -86,7 +86,7 @@ public class AstNewexp extends AstExp {
     Temp dst = new Temp();
 
     if (exp == null) { // Class object
-      Ir.getInstance().AddIrCommand(new IrCommandNewObject(dst, classInfo.name, classInfo.getInitialValues()));
+      Ir.getInstance().AddIrCommand(new IrCommandNewObject(dst, classInfo.name, classInfo.getInitialValues(), classInfo.attributes.size()));
       System.out.println("Created a class object of type: " + classInfo.name);
     } else { // Array object
       Temp tempStoresSize = exp.IRme();

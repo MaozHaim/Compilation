@@ -305,10 +305,10 @@ public class MipsGenerator
 	}
 
 
-	public void initializeObject(Temp dst, String virtualPointer, List<InitialConstVal> initialValues){
-		// allocate memory
+	public void initializeObject(Temp dst, String virtualPointer, List<InitialConstVal> initialValues, int totalFieldsCount){
+		// Allocate memory based on the total number of fields, NOT the initial values list
 		printf("li $v0, 9");
-		printf("li $a0, %d", initialValues.size() + 1); // 0 is the virtual table pointer
+		printf("li $a0, %d", totalFieldsCount + 1); // +1 is for the virtual table pointer
 		printf("mul $a0, $a0, 4");
 		printf("syscall");
 

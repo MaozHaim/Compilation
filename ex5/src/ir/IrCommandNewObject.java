@@ -10,17 +10,19 @@ public class IrCommandNewObject extends IrCommand{
     Temp dst;
     String className;
     List<InitialConstVal> initialVals;
+    int totalFields;
 
 
-    public IrCommandNewObject(Temp dst, String className, List<InitialConstVal> initialVals) {
+    public IrCommandNewObject(Temp dst, String className, List<InitialConstVal> initialVals, int totalFields ) {
         this.dst = dst;
         this.className = className;
         this.initialVals = initialVals;
+        this.totalFields =totalFields;
     }
 
 
     public String toString() {
-        return dst + " := " + "newClassObject(" + className + ")";
+        return dst + " := " + "newClassObject(" + className + ", size=" + totalFields + ")";
     }
 
 
@@ -39,6 +41,6 @@ public class IrCommandNewObject extends IrCommand{
 
     @Override
     public void MIPSme() {
-        MipsGenerator.getInstance().initializeObject(dst, "vtable_" + className, initialVals);
+        MipsGenerator.getInstance().initializeObject(dst, "vtable_" + className, initialVals, totalFields);
     }
 }
