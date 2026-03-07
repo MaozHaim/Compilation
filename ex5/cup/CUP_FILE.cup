@@ -122,20 +122,15 @@ non terminal NodeList<AstFuncParam> c_t_id_star;
 non terminal NodeList<AstCfield> cFieldList;
 non terminal NodeList<AstExp> c_exp_star;
 
-/***********************/
-/* OPERATOR PRECEDENCE */
-/***********************/
+/*******************************************************************/
+/* OPERATOR PRECEDENCE - FROM LOWEST (TOP) TO HIGHEST (BOTTOM)     */
+/* Operators on the same line share the same precedence level.     */
+/*******************************************************************/
 precedence left ASSIGN;
-precedence left EQ;
-precedence left LT;
-precedence left GT;
-precedence left PLUS;
-precedence left MINUS;
-precedence left TIMES;
-precedence left DIVIDE;
-precedence left LBRACK;
-precedence left LPAREN;
-precedence left DOT;
+precedence left EQ, LT, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left LBRACK, LPAREN, DOT;
 
 /************************/
 /* START WITH: stmtList */
