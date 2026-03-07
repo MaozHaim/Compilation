@@ -41,6 +41,6 @@ public class IrCommandBranchLTZ extends IrCommandJump {
 
     @Override
     public void MIPSme() {
-        MipsGenerator.getInstance().bltz(t1, label_name);
+        MipsGenerator.getInstance().bltz(t1, labelName);
     }
 }

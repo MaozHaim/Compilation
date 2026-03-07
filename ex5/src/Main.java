@@ -12,7 +12,7 @@ import cfg.*;
 
 public class Main {
 
-	public static String outputFilename = null;
+	public static String outputFileName = null;
 
 	static public void main(String argv[]) {
 		Lexer l;
@@ -23,12 +23,12 @@ public class Main {
 		FileReader file_reader;
 		PrintWriter file_writer;
 		String inputFilename = argv[0];
-		outputFilename = argv[1];
+		outputFileName = argv[1];
 
 		try {
 			// Read file
 			file_reader = new FileReader(inputFilename);
-			file_writer = new PrintWriter(outputFilename);
+			file_writer = new PrintWriter(outputFileName);
 			l = new Lexer(file_reader);
 			System.out.println("\nLexical analysis successful.\n");
 			p = new Parser(l);
@@ -63,7 +63,7 @@ public class Main {
 			try {
 				cfg = new CFG(Ir.getInstance().getCommands());
 			} catch (Exception e) {
-				writeFailureToFile("Register Allocation Failed", outputFilename);
+				writeFailureToFile("Register Allocation Failed", outputFileName);
 				System.out.println("Register Allocation Failed");
 				System.exit(0);
 			}
@@ -72,7 +72,7 @@ public class Main {
 			// end of temp simplification
 
 			System.out.println("\n=========================\n===== MIPSing to file =====\n=========================");
-			MipsGenerator.getInstance().setOutPath(outputFilename);
+			MipsGenerator.getInstance().setOutPath(outputFileName);
 			Ir.getInstance().MIPSme();
 			MipsGenerator.getInstance().finalizeFile();
 			System.out.println("Successful MIPS translation.");

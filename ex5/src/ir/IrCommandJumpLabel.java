@@ -14,12 +14,12 @@ public class IrCommandJumpLabel extends IrCommandJump {
 
 
     public void MIPSme() {
-        MipsGenerator.getInstance().jump(label_name);
+        MipsGenerator.getInstance().jump(labelName);
     }
 
 
     @Override
     public String toString() {
-        return "jmp " + label_name;
+        return "jmp " + labelName;
     }
 }

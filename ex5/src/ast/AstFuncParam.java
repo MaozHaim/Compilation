@@ -37,7 +37,6 @@ public class AstFuncParam extends AstNode {
         return SemantMe(-1);
     }
 
-    @Override
     public Type SemantMe(int offset) {
         Type paramType = type.SemantMe();
         if (paramType instanceof TypeVoid) {

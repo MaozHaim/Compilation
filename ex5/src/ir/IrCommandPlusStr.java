@@ -8,8 +8,6 @@ import java.util.Set;
 public class IrCommandPlusStr extends IrCommandBinop {
     public IrCommandPlusStr(Temp dst, Temp t1, Temp t2) {
         super(dst, t1, t2);
-
-        Ir.getInstance().AddIrCommand(new IRcommandRemoveFromCFG(dst));
     }
 
 
