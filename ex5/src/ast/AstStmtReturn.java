@@ -1,7 +1,6 @@
 package ast;
 
 import symboltable.SymbolTable;
-import symboltable.currentFunction;
 import types.Type;
 import types.TypeArray;
 import types.TypeClass;
