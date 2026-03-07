@@ -55,8 +55,8 @@ public class AstExpMethod extends AstExp{
         }
         return argumentTypes;
     }
-    
-    
+
+
     @Override
     public Type SemantMe() {
         SymbolTable table = SymbolTable.getInstance();
@@ -64,8 +64,10 @@ public class AstExpMethod extends AstExp{
         if (!(data instanceof TypeClass)) {
             throwException("Attempting to call method on a non-class type.");
         }
-        TypeClass classData = (TypeClass) data;
-        Type methodType = table.findMemberType(classData, methodName);
+
+        this.classData = (TypeClass) data;
+
+        Type methodType = table.findMemberType(this.classData, methodName);
 
         if (!(methodType instanceof TypeFunction)) {
             throwException("Attempting to call attribute as a method.");
@@ -74,6 +76,7 @@ public class AstExpMethod extends AstExp{
         TypeFunction functionData = (TypeFunction)methodType;
         Type returnType = functionData.returnType;
         List<Type> argsList = expsToList();
+
         if (!(Utils.matchTypesArgsParams(argsList, functionData.params))){
             throwException("Bad parameters or arguments.");
         }

@@ -116,12 +116,21 @@ public class AstClassDec extends AstDec{
                 memberID = field.varDec.id;
                 Type found = table.findMemberType(mytype, memberID);
                 if (found != null) cField.throwException("Field already defined in superclass");
+
+                // Must record the initial value into the TypeClass to maintain memory layout
+                if (field.varDec.exp != null) {
+                    // Has explicit initialization
+                    mytype.addInitialVal(new ir.InitialConstVal(field.varDec.exp));
+                } else {
+                    // Uninitialized field - Pad with 0
+                    mytype.addInitialVal(new ir.InitialConstVal(new ast.AstExpInt(0, cField.lineNum)));
+                }
             }
             else { throwException("cField in class declaration is not a function or a variable."); }
 
             Metadata metadata = tryTableFindMetadata(memberID); // Fetch the member metadata you just Semanted.
             TypeClassMemberDec member = new TypeClassMemberDec(memberType, memberID, metadata);
-            if (member.metadata.isVariable())
+            if (member.metadata != null && member.metadata.isVariable())
                 System.out.println(
                         "Class: " + member.metadata.getClassName() + ", defined an attribute: " + memberID + ", with an offset: " + member.metadata.getOffset()
                 );
