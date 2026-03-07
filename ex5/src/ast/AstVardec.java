@@ -60,7 +60,7 @@ public class AstVardec extends AstDec {
 
         constructVariableMetadata();
 
-        tryTableEnter(id, vartype);
+        tryTableEnter(id, vartype, metadata);
 
         Type exptype = null;
 
