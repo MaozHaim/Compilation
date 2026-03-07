@@ -253,7 +253,7 @@ public class MipsGenerator
 
 
 	public void getAttributeAddress(Temp dst, int offset){
-		printf("add $t%d, $s1, %d", dst.getSerialNumber(), offset * WORD_SIZE);
+		printf("addi $t%d, $s1, %d", dst.getSerialNumber(), offset * WORD_SIZE);
 	}
 
 
