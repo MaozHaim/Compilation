@@ -51,8 +51,14 @@ public class AstNewexp extends AstExp {
     Type objectType = type.SemantMe();
 
     if (exp == null) { // If skipped: "NEW type" is the expression. No need to evaluate exp.
+      if (!(objectType instanceof TypeClass)) {
+        throwException("Can only instantiate classes using 'new Type'.");
+      }
+
+      this.classInfo = (TypeClass) objectType;
       return objectType;
     }
+
     // Object is an array
     if (objectType instanceof TypeVoid) {
       throwException("Cannot allocate array over void type.");
