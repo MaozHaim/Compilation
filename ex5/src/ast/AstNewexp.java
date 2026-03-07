@@ -45,6 +45,8 @@ public class AstNewexp extends AstExp {
     return Arrays.asList(type, exp);
   }
 
+
+  @Override
   public Type SemantMe() {
     Type objectType = type.SemantMe();
 
@@ -66,11 +68,14 @@ public class AstNewexp extends AstExp {
     return new TypeArray(objectType.name + "[]", objectType);
   }
 
+
   @Override
   public boolean isNewExp() {
     return true;
   }
 
+
+  @Override
   public Temp IRme() {
     Temp dst = new Temp();
 
