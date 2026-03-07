@@ -73,16 +73,8 @@ public class AstProgram extends AstNode {
         ir.AddIrCommand(new IrCommandBeginText());
         ir.AddIrCommand(new IrCommandGenerateBuiltinFuncs());
 
-        for (AstDec dec : this.declarations) {
-            if (dec instanceof AstVardec) {
-                dec.IRme();
-            }
-        }
-        for (AstDec dec : this.declarations) {
-            if (!(dec instanceof AstVardec)) {
-                dec.IRme();
-            }
-        }
+        for (AstDec dec : this.declarations)
+            dec.IRme();
         return null;
     }
 
