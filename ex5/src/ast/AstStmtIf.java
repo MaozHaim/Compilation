@@ -18,9 +18,7 @@ public class AstStmtIf extends AstStmt
 	public AstExp cond;
 	public AstStmtList body;
 
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
+
 	public AstStmtIf(AstExp cond, AstStmtList body, int lineNum)
 	{
 		super("IF LPAREN exp RPAREN LBRACE stmtlist RBRACE", lineNum); // if (exp) {...}
