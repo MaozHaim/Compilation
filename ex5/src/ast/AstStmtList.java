@@ -3,20 +3,16 @@ package ast;
 import types.Type;
 import temp.Temp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class AstStmtList extends AstNode
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
 	public AstStmt head;
 	public AstStmtList tail;
 
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
+
 	public AstStmtList(AstStmt head, AstStmtList tail, int lineNum)
 	{
 		super("stmtlist -> " + (tail != null ? "stmt stmtlist" : "stmt"), lineNum);
@@ -51,5 +47,17 @@ public class AstStmtList extends AstNode
 		if (tail != null) tail.IRme();
 
 		return null;
+	}
+
+
+	public List<AstStmt> getStatements(){
+		List<AstStmt> statements = new ArrayList<>();
+		AstStmtList curr = this;
+		do {
+			statements.add(curr.head);
+			curr = curr.tail;
+		} while(curr != null);
+
+		return statements;
 	}
 }

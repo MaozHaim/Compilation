@@ -111,7 +111,7 @@ public class AstFuncdec extends AstDec {
         statements.IRme();
 
 
-        if (!(statements.getStatements().getLast() instanceof AstStmtReturn))
+        if (!(statements.getStatements().get(statements.getStatements().size() - 1) instanceof AstStmtReturn))
             ir.AddIrCommand(new IrCommandReturn(id.equals("main")));
         return null;
     }
