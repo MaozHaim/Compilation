@@ -33,6 +33,8 @@ public class Ir {
 
 
 	public void MIPSme(){
-		for (IrCommand command : commands) { command.MIPSme(); }
+		for (IrCommand command : commands) {
+			command.MIPSme();
+		}
 	}
 }
