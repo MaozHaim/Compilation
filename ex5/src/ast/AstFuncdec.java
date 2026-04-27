@@ -1,7 +1,10 @@
 package ast;
 
+import ir.InitialConstVal;
 import ir.IrCommandFuncDec;
+import ir.IrCommandGetGlobalAddress;
 import ir.IrCommandReturn;
+import ir.IrCommandStore;
 import symboltable.SymbolTable;
 import types.Type;
 import types.TypeFunction;
@@ -108,6 +111,20 @@ public class AstFuncdec extends AstDec {
         for (AstFuncParam param : params) { // Logging purposes
             param.IRme();
         }
+
+        // Per spec §2.3: before entering main, all globals with non-constant
+        // initializers are evaluated in source order. SPIM jumps straight to
+        // main, so we emit the init code as main's prologue.
+        if (id.equals("main") && className == null) {
+            for (Pair<String, InitialConstVal> g : AstProgram.getGlobals()) {
+                if (!g.second.needsRuntimeInit()) continue;
+                Temp val  = g.second.getRuntimeInitExp().IRme();
+                Temp addr = new Temp();
+                ir.AddIrCommand(new IrCommandGetGlobalAddress(addr, g.first));
+                ir.AddIrCommand(new IrCommandStore(val, addr, 0));
+            }
+        }
+
         statements.IRme();
 
 

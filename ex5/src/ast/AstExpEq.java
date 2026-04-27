@@ -13,6 +13,7 @@ public class AstExpEq extends AstExp
 	public AstExp right;
 	public AstBinop op;
 	public Type type;
+	public Type operandType;
 
 
 	public AstExpEq(AstExp left, AstExp right, int lineNum)
@@ -58,6 +59,7 @@ public class AstExpEq extends AstExp
 		boolean oneIsNil = typeLeft instanceof TypeNil || typeRight instanceof TypeNil;
 
 		if (typeLeft.equals(typeRight)) {
+			operandType = typeLeft;
 			return TypeInt.getInstance();
 		}
 		if (oneIsObject && oneIsNil) {
@@ -92,7 +94,7 @@ public class AstExpEq extends AstExp
 
 		IrCommand command = null;
 
-		if (type instanceof TypeString) {
+		if (operandType instanceof TypeString) {
 			command = new IrCommandEqStr(dst, t1, t2);
 		} else {
 			command = new IrCommandEqInt(dst, t1, t2);

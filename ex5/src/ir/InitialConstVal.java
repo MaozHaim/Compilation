@@ -4,16 +4,22 @@ import ast.AstExp;
 import ast.AstExpInt;
 import ast.AstExpString;
 
-// holds information about the initial constant value that a variable gets on declaration
+// holds information about the initial value that a variable gets on declaration.
+// for class fields the initializer must be a constant literal; for globals it
+// may be an arbitrary expression that is evaluated at runtime before main.
 public class InitialConstVal {
     private String value = "0";
     private boolean isString = false;
+    private AstExp runtimeInitExp = null;
 
 
     public InitialConstVal(AstExp exp){
         if (exp == null) return; // empty initialization
 
-        if (!exp.isConstant()) throw new RuntimeException("Tried to initialize variable with non-const value");
+        if (!exp.isConstant()) {
+            runtimeInitExp = exp;
+            return;
+        }
 
         if (exp instanceof AstExpInt){
             AstExpInt eint = (AstExpInt)exp;
@@ -35,5 +41,15 @@ public class InitialConstVal {
 
     public boolean isString() {
         return isString;
+    }
+
+
+    public boolean needsRuntimeInit() {
+        return runtimeInitExp != null;
+    }
+
+
+    public AstExp getRuntimeInitExp() {
+        return runtimeInitExp;
     }
 }

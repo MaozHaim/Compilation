@@ -463,10 +463,12 @@ public class MipsGenerator
 
 	public void compareStr(Temp dst, Temp t1, Temp t2, String lblCompare, String lblNotEq, String lblEnd) {
 		// DOES NOT PRESERVE s2, s3, s4, s5
-		printf("li $t%d, 1", dst.getSerialNumber()); // assume equal
-
+		// Read operand pointers BEFORE writing dst, in case the register
+		// allocator coalesces dst with one of them (operand dies at this op).
 		printf("move $s2, $t%d", t1.getSerialNumber());
 		printf("move $s3, $t%d", t2.getSerialNumber());
+
+		printf("li $t%d, 1", dst.getSerialNumber()); // assume equal
 
 		// comparison loop
 		label(lblCompare);

@@ -36,6 +36,10 @@ public class AstProgram extends AstNode {
         globals.add(name);
     }
 
+    public static List<Pair<String, InitialConstVal>> getGlobals() {
+        return globals;
+    }
+
     public static void addStringConstant(String constant) {
         stringConstants.add(constant);
     }
