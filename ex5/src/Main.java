@@ -8,6 +8,7 @@ import java_cup.runtime.Symbol;
 import ast.*;
 import ir.*;
 import cfg.*;
+import errors.CompilationException;
 
 
 public class Main {
@@ -46,8 +47,14 @@ public class Main {
 				System.out.println("=========================\n===Initiating Semantme===\n=========================");
 				AST.SemantMe();
 			}
+			catch (CompilationException e) {
+				e.printStackTrace();
+				writeFailureToFile("ERROR(" + e.getLineNumber() + ")", outputFileName);
+				System.exit(0);
+			}
 			catch (Exception e) {
 				e.printStackTrace();
+				writeFailureToFile("ERROR", outputFileName);
 				System.exit(0);
 			}
 

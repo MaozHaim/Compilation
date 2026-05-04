@@ -2,6 +2,8 @@ package ast;
 
 import ir.Ir;
 import ir.IrCommandCallMethod;
+import ir.IrCommandLoad;
+import ir.IrPatterns;
 import symboltable.SymbolTable;
 import temp.Temp;
 import types.Type;
@@ -96,9 +98,16 @@ public class AstExpMethod extends AstExp{
 
         int methodOffset = classData.getMethodIndex(methodName);
 
-        Temp caller = var.IRme();
+        // var.IRme() returns the address of the storage holding the object
+        // pointer; load it to test for nil, then pass the address through to
+        // IrCommandCallMethod (which loads it again internally).
+        Temp callerAddr = var.IRme();
+        Temp callerVal = new Temp();
+        ir.AddIrCommand(new IrCommandLoad(callerVal, callerAddr, 0));
+        IrPatterns.checkNullRef(callerVal);
+
         Temp dst = new Temp();
-        ir.AddIrCommand(new IrCommandCallMethod(methodName, methodOffset, caller, arguments, dst));
+        ir.AddIrCommand(new IrCommandCallMethod(methodName, methodOffset, callerAddr, arguments, dst));
 
         return dst;
     }

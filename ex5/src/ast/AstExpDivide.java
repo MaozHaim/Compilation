@@ -85,6 +85,7 @@ public class AstExpDivide extends AstExp
 		}
 
 		IrPatterns.divide(dst, t1, t2);
+		IrPatterns.clampInteger(dst); // -32768 / -1 overflows the 16-bit range; saturate to 32767
 		return dst;
 	}
 }

@@ -89,7 +89,7 @@ public class AstExpFunc extends AstExpFuncAbstract {
 
         // This means that function statements that ignore the return value still take a temp away
         Temp dst = new Temp();
-        ir.AddIrCommand(new IrCommandCallFunc(id, arguments, dst));
+        ir.AddIrCommand(new IrCommandCallFunc(AstFuncdec.mangleFunctionLabel(null, id), arguments, dst));
 
         return dst;
     }

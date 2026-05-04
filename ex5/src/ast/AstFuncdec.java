@@ -101,11 +101,20 @@ public class AstFuncdec extends AstDec {
     }
 
 
+    // Prefix user-defined free function labels to avoid clashing with MIPS
+    // pseudo-instructions/keywords (e.g. abs, add, sub, mul, move). main is
+    // exempt because SPIM expects it as the entry-point label. Class methods
+    // already get a Class_method form that's safely unique.
+    public static String mangleFunctionLabel(String className, String id) {
+        if (className != null) return className + "_" + id;
+        if (id.equals("main")) return id;
+        return "func_" + id;
+    }
+
+
     public Temp IRme() {
         Ir ir = Ir.getInstance();
-        String labelName;
-        if (className != null) labelName = className + "_" + id; // Method names are inherently unique (Person_getAge:..)
-        else labelName = id; // Global function names are also inherently unique.
+        String labelName = mangleFunctionLabel(className, id);
         ir.AddIrCommand(new IrCommandFuncDec(labelName, localVarAmount));
 
         for (AstFuncParam param : params) { // Logging purposes

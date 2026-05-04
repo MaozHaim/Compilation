@@ -123,18 +123,22 @@ public class MipsGenerator
 	 * Also does not preserve ra but should be fine since it is saved in stack for every non-builtin function call anyway.
 	*/
 	 public void appendStrs(Temp dst, Temp t1, Temp t2){
+		// Save both source pointers to s-registers up front, before any write
+		// to dst — the register allocator may coalesce dst with t1 or t2 since
+		// they die at this op, so we cannot read $t<t1> or $t<t2> after dst is
+		// written.
+		printf("move $s4, $t%d", t1.getSerialNumber()); // s4 = t1 ptr
+		printf("move $s5, $t%d", t2.getSerialNumber()); // s5 = t2 ptr
+
 		// call strlen on t1, save in s2
-		printf("move $a0, $t%d", t1.getSerialNumber());
+		printf("move $a0, $s4");
 		printf("jal %s", STRLEN_LABEL);
 		printf("move $s2, $v0");
 
 		// call strlen on t2, save in s3
-		printf("move $a0, $t%d", t2.getSerialNumber());
+		printf("move $a0, $s5");
 		printf("jal %s", STRLEN_LABEL);
 		printf("move $s3, $v0");
-
-		// save t2 in $s4 to avoid it being overwritten
-		printf("move $s4, $t%d", t2.getSerialNumber());
 
 		// calculate total length, save in a0, allocate memory
 		printf("add $a0, $s2, $s3");
@@ -147,12 +151,12 @@ public class MipsGenerator
 
 		// copy t1 into dst
 		printf("move $a0, $t%d", dst.getSerialNumber()); // dest
-		printf("move $a1, $t%d", t1.getSerialNumber());  // src = t1
+		printf("move $a1, $s4");                          // src = t1
 		printf("jal %s", STRCPY_LABEL);
 
 		// copy t2 into dst + len(t1)
 		printf("add $a0, $t%d, $s2", dst.getSerialNumber()); // dest + len(t1)
-		printf("move $a1, $s4"); // src = t2
+		printf("move $a1, $s5");                              // src = t2
 		printf("jal %s", STRCPY_LABEL);
 	}
 

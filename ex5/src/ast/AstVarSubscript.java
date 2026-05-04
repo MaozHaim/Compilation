@@ -73,6 +73,7 @@ public class AstVarSubscript extends AstVar {
 		Temp dst = new Temp();
 
 		ir.AddIrCommand(new IrCommandLoad(array, ptrToArray, 0)); // get address saved in address
+		IrPatterns.checkNullRef(array); // nil array dereference must error before bounds check
 		ir.AddIrCommand(new IrCommandLoad(size, array, 0)); // get size of array
 		ir.AddIrCommand(new IrCommandBranchLTZ(index, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index < 0
 		ir.AddIrCommand(new IrCommandBranchGE(index, size, IrPatterns.OUT_OF_BOUNDS_LABEL, true)); // index >= size
